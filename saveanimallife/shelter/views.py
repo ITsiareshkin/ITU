@@ -1,11 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-menu = [{'title': "Animals", 'url_name': 'animals'},
-        {'title': "About Us", 'url_name': 'about_us'},
-        {'title': "Donate", 'url_name': 'donate'},
-        {'title': "Sign In", 'url_name': 'sign_in'}
-]
+menu = [{'title': "Animals", 'url_name': 'animals'}]
+
 
 def index(request):
     context = {
@@ -14,14 +11,34 @@ def index(request):
     }
     return render(request, 'shelter/index.html', context=context)
 
-def userpage(request):
-    return render(request, 'shelter/index.html')
-
-def about_us(request):
-    return render(request, 'shelter/index.html')
 
 def animals(request):
-    return render(request, 'shelter/index.html')
+    context = {
+        'menu': menu,
+        'title': 'Animals'
+    }
+    return render(request, 'shelter/index.html', context=context)
 
-def donate(request):
-    return render(request, 'shelter/index.html')
+
+def register(request):
+    context = {
+        'menu': menu,
+        'title': 'Register'
+    }
+    return render(request, 'shelter/index.html', context=context)
+
+
+def login(request):
+    context = {
+        'menu': menu,
+        'title': 'Log in'
+    }
+    return render(request, 'shelter/index.html', context=context)
+
+
+def userpage(request):
+    context = {
+        'menu': menu,
+        'title': 'User page'
+    }
+    return render(request, 'shelter/index.html', context=context)
