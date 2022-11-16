@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from saveanimallife import settings
-from shelter.views import index
+from shelter.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),

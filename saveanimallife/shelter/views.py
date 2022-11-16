@@ -1,15 +1,24 @@
+from django.contrib.auth import logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import *
+
+from .forms import RegisterUserForm
+from .utils import *
 
 menu = [{'title': "Animals", 'url_name': 'animals'}]
 
 
-def index(request):
-    context = {
-        'menu': menu,
-        'title': 'Animal Shelter'
-    }
-    return render(request, 'shelter/index.html', context=context)
+class ShelterHome(DataMixin, TemplateView):
+    template_name = 'shelter/index.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Home page")
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 def animals(request):
@@ -20,20 +29,34 @@ def animals(request):
     return render(request, 'shelter/index.html', context=context)
 
 
-def register(request):
-    context = {
-        'menu': menu,
-        'title': 'Register'
-    }
-    return render(request, 'shelter/index.html', context=context)
+class Register(DataMixin, CreateView):
+    form_class = RegisterUserForm
+    template_name = 'shelter/register.html'
+    success_url = reverse_lazy('login')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Register")
+        return dict(list(context.items()) + list(c_def.items()))
 
 
-def login(request):
-    context = {
-        'menu': menu,
-        'title': 'Log in'
-    }
-    return render(request, 'shelter/index.html', context=context)
+class Login(DataMixin, LoginView):
+    form_class = AuthenticationForm
+    template_name = 'shelter/login.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Log in")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
+
 
 
 def userpage(request):
