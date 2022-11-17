@@ -1,6 +1,6 @@
 from .models import *
 
-menu = [{'title': "Animals", 'url_name': 'animals'}]
+menu = [{'title': "Animals", 'url_name': 'animals'}, {'title': "About us", 'url_name': 'about_us'}]
 
 
 class DataMixin:

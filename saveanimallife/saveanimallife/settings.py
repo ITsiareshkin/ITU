@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'shelter.apps.ShelterConfig'
 ]
+AUTH_USER_MODEL = "shelter.Account"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
