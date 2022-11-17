@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import *
 
-from .forms import RegisterUserForm
+from .forms import RegisterUserForm, ChangePasswdForm
 from .utils import *
 
 menu = [{'title': "Animals", 'url_name': 'animals'}, {'title': "About us", 'url_name': 'about_us'}]
@@ -87,6 +87,7 @@ class Mypage(DataMixin, TemplateView):
 
 class PasswordChange(DataMixin, PasswordChangeView):
     template_name = 'shelter/change_password.html'
+    form_class = ChangePasswdForm
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
