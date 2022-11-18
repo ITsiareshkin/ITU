@@ -1,0 +1,18 @@
+{% extends 'shelter/base.html' %}
+
+{% block content %}
+username : {{account.username}}<br>
+Name     : {{account.name}}<br>
+Surname  : {{account.surname}}<br>
+email    : {{account.email}}<br>
+status   : {{account.position}}
+{% if account.position == "verified" %}
+<a href="#">verify</a>
+{% elif  account.position == "unverified" %}
+<a href="#">unverify</a>
+{% endif %}
+<br>
+{% if user.position == "admin" %}
+<a href="{% url 'user_edit' account.pk %}">Edit user</a>
+{% endif %}
+{% endblock %}
