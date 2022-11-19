@@ -69,4 +69,25 @@ class Account(AbstractBaseUser):
 
     def get_absolute_url(self):
         return reverse('user', kwargs={'userid': self.pk})
-#
+
+
+class Animal(models.Model):
+    name = models.CharField(max_length=30, default="")
+    kind = models.CharField(max_length=15)
+    breed = models.CharField(max_length=50)
+    age = models.IntegerField(default="")
+    color = models.CharField(max_length=50)
+    gender = models.CharField(max_length=10)
+    discription = models.TextField()
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d')
+    added = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('animal', kwargs={'animalid': self.pk})
+
+    class Meta:
+        ordering = ('-added',)
