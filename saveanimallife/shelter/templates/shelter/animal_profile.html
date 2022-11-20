@@ -1,0 +1,29 @@
+{% extends 'shelter/base.html' %}
+{% block content %}
+<div class="container">
+    <img img class="animal-img" src="{{ animal.photo.url }}">
+    <div class="animal-name">
+        {{ animal.name }}
+    </div>
+    <br>
+    <div class="row">
+        <div class="animal-info">Breed:&nbsp</div>
+        <div class="animal-spec">{{ animal.breed }}</div>
+    </div>
+    <div class="row">
+        <div class="animal-info">Gender:&nbsp</div>
+        <div class="animal-spec">{{ animal.gender }}</div>
+    </div>
+    <div class="row">
+        <div class="animal-info">Age:&nbsp</div>
+        <div class="animal-spec">{{ animal.age }}</div>
+    </div>
+    <br>
+    <br>
+    <p>My history:</p>
+    <div class="animal-spec">{{ animal.discription }}</div>
+
+    {#TODO edit animal profile#}
+</div>
+
+{% endblock content %}

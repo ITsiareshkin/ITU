@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 
 
 class MyAccountManager(BaseUserManager):
@@ -9,6 +10,8 @@ class MyAccountManager(BaseUserManager):
             raise ValueError('Users must have an email address')
         if not username:
             raise ValueError('Users must have a username')
+        if not password:
+            raise ValueError('Users must have a password')
 
         user = self.model(
             email=self.normalize_email(email),
@@ -54,7 +57,7 @@ class Account(AbstractBaseUser):
     objects = MyAccountManager()
 
     def __str__(self):
-        return self.email
+        return self.username
 
     # For checking permissions. to keep it simple all admin have ALL permissions
     def has_perm(self, perm, obj=None):
@@ -64,4 +67,27 @@ class Account(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
-#
+    def get_absolute_url(self):
+        return reverse('user', kwargs={'userid': self.pk})
+
+
+class Animal(models.Model):
+    name = models.CharField(max_length=30, default="")
+    kind = models.CharField(max_length=15)
+    breed = models.CharField(max_length=50)
+    age = models.IntegerField(default="")
+    color = models.CharField(max_length=50)
+    gender = models.CharField(max_length=10)
+    discription = models.TextField()
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d')
+    added = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('animal', kwargs={'animalid': self.pk})
+
+    class Meta:
+        ordering = ('-added',)

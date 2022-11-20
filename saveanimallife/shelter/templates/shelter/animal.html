@@ -1,0 +1,73 @@
+{% extends 'shelter/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div id="filters">
+        <h3>Find your best friend</h3>
+        <p>If you want to adopt an animal, please read our <a class="link-rules" href="">adoption rules</a>.</p>
+        <form action="" method="get">
+            <div class="row">
+                <div class="animal_filters">
+                    <select class="form-control" name="species">
+                        <option value="">Kind</option>
+                        <option value="1">Cat</option>
+                        <option value="2">Dog</option>
+                    </select>
+                </div>
+                <div class="animal_filters">
+                    <select class="form-control" name="animal_size">
+                        <option value="">Size</option>
+                        <option value="1">Smol</option>
+                        <option value="2">Avarage</option>
+                        <option value="3">Big</option>
+                    </select>
+                </div>
+                <div class="animal_filters">
+                    <select class="form-control" name="sex">
+                        <option value="">Genger</option>
+                        <option value="0">Female</option>
+                        <option value="1">Male</option>
+                    </select>
+                </div>
+                <div class="animal_filters">
+                    <select class="form-control" name="birth_date">
+                        <option value="">Age</option>
+                        <option value="1"><1</option>
+                        <option value="2">1-5</option>
+                        <option value="3">5<</option>
+                    </select>
+                </div>
+                <div class="animal_filters">
+                    <button type="submit" class="animal_btn">Find</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <br>
+
+    <div class="row">
+    {% for a in animal %}
+        <div class="animal-item">
+            <a href="{{ a.get_absolute_url }}">
+                <div class="animal-image-list">
+                    <img src="{{ a.photo.url }}" alt="">
+                </div>
+                <div class="animal-description-">
+                    <div class="animal-name-list ">
+                        {{ a.name }}
+                    </div>
+                    <div class="animal-info-list">
+                        {{ a.gender }} / {{ a.age }} y.o
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+
+{% endblock content %}
+
