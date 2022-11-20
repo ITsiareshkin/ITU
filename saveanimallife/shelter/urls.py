@@ -4,7 +4,11 @@ from .views import *
 urlpatterns = [
     path('', ShelterHome.as_view(), name='home'),
     path('mypage/', Mypage.as_view(), name='mypage'),
-    path('animals/', animals, name='animals'),
+    path('animals/', AnimalList.as_view(), name='animals'),
+
+    path('animals/<int:animalid>/', AnimalProfile.as_view(), name='animal'),
+    path('animals/addanimal', ShowAddAnimal.as_view(), name='addanimal'),
+
     path('about_us/', about_us, name='about_us'),
     path('login/', Login.as_view(), name='login'),
     path('logout/', logout_user, name='logout'),

@@ -8,13 +8,14 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import *
+# from django.views.generic.edit import BaseCreateView
 
-from .forms import RegisterUserForm, ChangePasswdForm, EditProfileForm, EditUserForm, AdminAddUserForm
+from .forms import *
 from .utils import *
+from .models import *
 
 menu = [{'title': "Animals", 'url_name': 'animals'},
         {'title': "About us", 'url_name': 'about_us'}]
-
 
 class ShelterHome(DataMixin, TemplateView):
     template_name = 'shelter/index.html'
@@ -24,13 +25,55 @@ class ShelterHome(DataMixin, TemplateView):
         c_def = self.get_user_context(title="Home page")
         return dict(list(context.items()) + list(c_def.items()))
 
+class AnimalList(DataMixin, ListView):
+    model = Animal
+    template_name = 'shelter/animal.html'
+    context_object_name = 'animal'
 
-def animals(request):
-    context = {
-        'menu': menu,
-        'title': 'Animals'
-    }
-    return render(request, 'shelter/index.html', context=context)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Animals"
+        context['menu'] = menu
+        return context
+
+class AnimalProfile(DataMixin, DetailView):
+    model = Animal
+    template_name = 'shelter/animal_profile.html'
+    pk_url_kwarg = 'animalid' # make slug
+    context_object_name = 'animal'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "AAAAAA" #FIX: display animal name
+        context['menu'] = menu
+        return context
+
+@method_decorator(login_required, name='dispatch')
+class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
+    paginate_by = 5 # wtf
+    form_class = AddAnimal
+    template_name = 'shelter/addanimal.html'
+    success_url = reverse_lazy('animals')
+
+    def test_func(self):
+        if self.request.user.position == "employee":
+            return True
+        return False
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Add animal")
+        return dict(list(context.items()) + list(c_def.items()))
+
+# def addanimal(request):
+#     if request.method == 'POST':
+#         form = AddAnimal(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('animals')
+#     else:
+#         form = AddAnimal()
+#     return render(request, '')
 
 
 def about_us(request):
@@ -144,27 +187,6 @@ class ShowUserPage(UserPassesTestMixin, DetailView):
         context['menu'] = menu
         return context
 
-
-@method_decorator(login_required, name='dispatch')
-class ShowUsers(UserPassesTestMixin, ListView):
-    paginate_by = 5
-    model = Account
-    template_name = 'shelter/users.html'
-    context_object_name = 'accounts'
-    pk_url_kwarg = 'userid'
-
-    def test_func(self):
-        if self.request.user.position == "employee" or self.request.user.position == "admin":
-            return True
-        return False
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = "User page"
-        context['menu'] = menu
-        return context
-
-
 @method_decorator(login_required, name='dispatch')
 class UserEdit(DataMixin, UserPassesTestMixin, generic.UpdateView):
     model = Account
@@ -200,11 +222,24 @@ class AddUser(DataMixin, UserPassesTestMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('users')
 
+@method_decorator(login_required, name='dispatch')
+class ShowUsers(UserPassesTestMixin, ListView):
+    paginate_by = 5
+    model = Account
+    template_name = 'shelter/users.html'
+    context_object_name = 'accounts'
+    pk_url_kwarg = 'userid'
+
     def test_func(self):
-        if self.request.user.position == "admin":
+        if self.request.user.position == "employee" or self.request.user.position == "admin":
             return True
         return False
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "User page"
+        context['menu'] = menu
+        return context
 
 def plug(request):
     context = {

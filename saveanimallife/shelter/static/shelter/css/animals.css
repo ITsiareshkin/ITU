@@ -1,0 +1,20 @@
+ul.s3 {
+  display: flex;
+  flex-wrap: wrap;
+}
+ul.s3 li {
+  flex-basis: 30%;
+  display: block;
+  border: 1px solid green;
+}
+
+ul.s5 {
+  display: flex;
+  flex-wrap: wrap;
+}
+ul.s5 li {
+  flex-basis: 17%;
+  display: block;
+  border: 1px solid green;
+}
+li {margin: 2px;}
