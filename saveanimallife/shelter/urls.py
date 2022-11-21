@@ -7,7 +7,7 @@ urlpatterns = [
     path('animals/', AnimalList.as_view(), name='animals'),
 
     path('animals/<int:animalid>/', AnimalProfile.as_view(), name='animal'),
-    path('animals/addanimal', ShowAddAnimal.as_view(), name='addanimal'),
+    path('animals/addanimal/', ShowAddAnimal.as_view(), name='addanimal'),
 
     path('about_us/', about_us, name='about_us'),
     path('login/', Login.as_view(), name='login'),
@@ -18,5 +18,7 @@ urlpatterns = [
     path('user/<int:userid>/', ShowUserPage.as_view(), name='show_user'),
     path('user/edit/<int:userid>/', UserEdit.as_view(), name='user_edit'),
     path('users/', ShowUsers.as_view(), name='users'),
-    path('users/adduser', AddUser.as_view(), name='adduser'),
+    path('users/adduser/', AddUser.as_view(), name='adduser'),
+
+    path('walks/<int:animalid>/', AnimalWalks.as_view(), name="walks"),
 ]

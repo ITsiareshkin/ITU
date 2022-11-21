@@ -91,3 +91,20 @@ class Animal(models.Model):
 
     class Meta:
         ordering = ('-added',)
+
+
+class Walk(models.Model):
+    status = models.CharField(max_length=14, default="not confirmed")
+    walker = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE, null=False, blank=False)
+    starting = models.DateTimeField(default="not confirmed", null=False, blank=False)
+    ending = models.DateTimeField(default="not confirmed", null=False, blank=False)
+
+    def __str__(self):
+        return self.id
+
+    def get_absolute_url(self):
+        return reverse('walk', kwargs={'walkid': self.pk})
+
+    class Meta:
+        ordering = ('-starting',)

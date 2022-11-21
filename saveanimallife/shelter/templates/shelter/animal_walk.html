@@ -1,0 +1,24 @@
+{% extends 'shelter/base.html' %}
+
+{% block content %}
+<h1>{{title}}</h1>
+
+<form method="post">
+    {% csrf_token %}
+        <p><label class="form-label" for="id_starting">Beginning time: </label><input type="datetime-local" name="starting" required id="id_starting"></p>
+        <div class="form-error"></div>
+
+        <p><label class="form-label" for="id_ending">End time: </label><input type="datetime-local" name="ending" required id="id_ending"></p>
+        <div class="form-error"></div>
+
+        <button type="submit">Create</button>
+</form>
+    {{error}}
+<br>
+<table>
+    <tr><th>Start</th><th>End</th><th>Volunteer</th><th>Status</th><th></th></tr>
+{% for walk in walks %}
+    <tr><th> {{walk.starting}}</th><th>{{walk.ending}}</th><th>{{walk.valker_id}}</th><th>{{walk.status}}</th><th><a href="#">delete</a></th></tr>
+{% endfor %}
+</table>
+{% endblock %}

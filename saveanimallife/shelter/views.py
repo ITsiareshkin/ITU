@@ -1,13 +1,21 @@
+import re
+
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LoginView, PasswordChangeView
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import *
+from django.views.generic.base import TemplateResponseMixin
+from django.views.generic.list import BaseListView
+from django.db.models import Q
+
+from datetime import datetime
+
 # from django.views.generic.edit import BaseCreateView
 
 from .forms import *
@@ -17,6 +25,7 @@ from .models import *
 menu = [{'title': "Animals", 'url_name': 'animals'},
         {'title': "About us", 'url_name': 'about_us'}]
 
+
 class ShelterHome(DataMixin, TemplateView):
     template_name = 'shelter/index.html'
 
@@ -24,6 +33,7 @@ class ShelterHome(DataMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Home page")
         return dict(list(context.items()) + list(c_def.items()))
+
 
 class AnimalList(DataMixin, ListView):
     model = Animal
@@ -36,21 +46,23 @@ class AnimalList(DataMixin, ListView):
         context['menu'] = menu
         return context
 
+
 class AnimalProfile(DataMixin, DetailView):
     model = Animal
     template_name = 'shelter/animal_profile.html'
-    pk_url_kwarg = 'animalid' # make slug
+    pk_url_kwarg = 'animalid'  # make slug
     context_object_name = 'animal'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = "AAAAAA" #FIX: display animal name
+        context['title'] = "AAAAAA"  # FIX: display animal name
         context['menu'] = menu
         return context
 
+
 @method_decorator(login_required, name='dispatch')
 class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
-    paginate_by = 5 # wtf
+    paginate_by = 5  # wtf
     form_class = AddAnimal
     template_name = 'shelter/addanimal.html'
     success_url = reverse_lazy('animals')
@@ -64,6 +76,7 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Add animal")
         return dict(list(context.items()) + list(c_def.items()))
+
 
 # def addanimal(request):
 #     if request.method == 'POST':
@@ -187,13 +200,13 @@ class ShowUserPage(UserPassesTestMixin, DetailView):
         context['menu'] = menu
         return context
 
+
 @method_decorator(login_required, name='dispatch')
 class UserEdit(DataMixin, UserPassesTestMixin, generic.UpdateView):
     model = Account
     template_name = 'shelter/edit_profile.html'
     form_class = EditUserForm
     pk_url_kwarg = 'userid'
-
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -208,6 +221,7 @@ class UserEdit(DataMixin, UserPassesTestMixin, generic.UpdateView):
             return True
         return False
 
+
 @method_decorator(login_required, name='dispatch')
 class AddUser(DataMixin, UserPassesTestMixin, CreateView):
     model = Account
@@ -221,6 +235,12 @@ class AddUser(DataMixin, UserPassesTestMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('users')
+
+    def test_func(self):
+        if self.request.user.position == "admin":
+            return True
+        return False
+
 
 @method_decorator(login_required, name='dispatch')
 class ShowUsers(UserPassesTestMixin, ListView):
@@ -240,6 +260,60 @@ class ShowUsers(UserPassesTestMixin, ListView):
         context['title'] = "User page"
         context['menu'] = menu
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+class AnimalWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMixin):
+    model = Walk
+    form_class = CreateWalkForm
+    template_name = 'shelter/animal_walk.html'
+    success_url = reverse_lazy('animals')
+    context_object_name = 'walks'
+    pk_url_kwarg = 'animalid'
+
+    def post(self, request, *args, **kwargs):
+        try:
+            a = Animal.objects.get(pk=self.kwargs['animalid'])
+        except:
+            raise Http404
+
+        start = request.POST.get('starting', '')
+        end = request.POST.get('ending', '')
+
+        if not (re.fullmatch(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}', start) and
+                re.fullmatch(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}', end)):
+            self.object_list = self.get_queryset()
+            context = self.get_context_data(object_list=self.object_list, error="Bad date")
+            return self.render_to_response(context)
+
+        start_d = datetime.strptime(start, '%Y-%m-%dT%H:%M')
+        end_d = datetime.strptime(end, '%Y-%m-%dT%H:%M')
+
+        b = Walk.objects.filter(starting__lte=start_d).filter(starting__gte=start_d)
+        c = Walk.objects.filter(starting__lte=end_d).filter(starting__gte=end_d)
+        if b.exists() or c.exists():
+            self.object_list = self.get_queryset()
+            context = self.get_context_data(object_list=self.object_list, error="overlap with another event")
+            return self.render_to_response(context)
+        Walk.objects.create(animal=a, starting=start_d, ending=end_d)
+        self.object_list = self.get_queryset()
+        context = self.get_context_data(object_list=self.object_list)
+        return self.render_to_response(context)
+
+    def get_queryset(self):
+        queryset = Walk.objects.filter(animal_id=self.kwargs['animalid'])
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Create Walk")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def test_func(self):
+        if self.request.user.position == "employee" or self.request.user.position == "verified":
+            return True
+        return False
+
 
 def plug(request):
     context = {

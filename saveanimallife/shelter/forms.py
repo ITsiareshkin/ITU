@@ -77,6 +77,7 @@ POSITION_CHOICES= [
     ('unverified', 'unverified'),
     ]
 
+
 class EditUserForm(forms.ModelForm):
     username = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -87,3 +88,12 @@ class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'name', 'surname', 'position']
+
+
+class CreateWalkForm(forms.ModelForm):
+    starting = forms.DateTimeField(label='Beginning time', widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+    ending = forms.DateTimeField(label='End time', widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+
+    class Meta:
+        model = Walk
+        fields = ['starting', 'ending']
