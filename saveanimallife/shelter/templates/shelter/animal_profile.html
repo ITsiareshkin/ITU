@@ -20,10 +20,12 @@
     </div>
     <br>
     <br>
-    <p>My history:</p>
+    <p>My discription:</p>
     <div class="animal-spec">{{ animal.discription }}</div>
 
-    {#TODO edit animal profile#}
+    {% if user.position == "employee" %}
+        <a href="{% url 'edit_animal' animal.pk %}">Edit animal profile</a>
+    {% endif %}
 </div>
 
 {% endblock content %}

@@ -90,4 +90,4 @@ class Animal(models.Model):
         return reverse('animal', kwargs={'animalid': self.pk})
 
     class Meta:
-        ordering = ('-added',)
+        ordering = ('name',)

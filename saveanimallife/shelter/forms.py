@@ -15,7 +15,7 @@ class RegisterUserForm(UserCreationForm):
         model = Account
         fields = ('username', 'email', 'password1', 'password2')
 
-class AddAnimal(forms.ModelForm):
+class AddAnimalForm(forms.ModelForm):
     name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
     kind = forms.CharField(max_length=15, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
     breed = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
@@ -27,10 +27,21 @@ class AddAnimal(forms.ModelForm):
     class Meta:
         model = Animal
         fields = ['name', 'kind', 'breed', 'age', 'color', 'gender', 'discription', 'photo']
-        #fields = '__all__'
-        # widgets = {
-        #     ''
-        # }
+
+
+class EditAnimalForm(forms.ModelForm):
+    name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    kind = forms.CharField(max_length=15, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    breed = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    age = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-input'}))  # IntegerInput ?
+    color = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    gender = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    discription = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
+    photo = forms.ImageField()
+
+    class Meta:
+        model = Animal
+        fields = ['name', 'kind', 'breed', 'age', 'color', 'gender', 'discription', 'photo']
 
 
 class ChangePasswdForm(PasswordChangeForm):

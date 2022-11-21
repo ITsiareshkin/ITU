@@ -8,6 +8,7 @@ urlpatterns = [
 
     path('animals/<int:animalid>/', AnimalProfile.as_view(), name='animal'),
     path('animals/addanimal', ShowAddAnimal.as_view(), name='addanimal'),
+    path('animals/edit/<int:animalid>', EditAnimal.as_view(), name='edit_animal'),
 
     path('about_us/', about_us, name='about_us'),
     path('login/', Login.as_view(), name='login'),
