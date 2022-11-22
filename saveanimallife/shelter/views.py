@@ -109,6 +109,11 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
     template_name = 'shelter/addanimal.html'
     success_url = reverse_lazy('animals')
 
+    def test_func(self):
+        if self.request.user.position == "employee":
+            return True
+        return False
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Add animal")
