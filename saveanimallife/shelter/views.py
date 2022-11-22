@@ -13,8 +13,9 @@ from django.views.generic import *
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.list import BaseListView
 from django.db.models import Q
+from django.db import connection
 
-from datetime import datetime
+from datetime import date, datetime, timedelta
 
 # from django.views.generic.edit import BaseCreateView
 
@@ -126,14 +127,14 @@ def logout_user(request):
     return redirect('login')
 
 
-@method_decorator(login_required, name='dispatch')
-class Mypage(DataMixin, TemplateView):
-    template_name = 'shelter/mypage.html'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="My profile")
-        return dict(list(context.items()) + list(c_def.items()))
+# @method_decorator(login_required, name='dispatch')
+# class Mypage(DataMixin, TemplateView):
+#     template_name = 'shelter/mypage.html'
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         c_def = self.get_user_context(title="My profile")
+#         return dict(list(context.items()) + list(c_def.items()))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -263,13 +264,12 @@ class ShowUsers(UserPassesTestMixin, ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-class AnimalWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMixin):
+class ManageAnimalWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMixin):
     model = Walk
-    form_class = CreateWalkForm
-    template_name = 'shelter/animal_walk.html'
-    success_url = reverse_lazy('animals')
+    template_name = 'shelter/manage_walks.html'
     context_object_name = 'walks'
     pk_url_kwarg = 'animalid'
+    paginate_by = 15
 
     def post(self, request, *args, **kwargs):
         try:
@@ -283,25 +283,62 @@ class AnimalWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponse
         if not (re.fullmatch(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}', start) and
                 re.fullmatch(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}', end)):
             self.object_list = self.get_queryset()
-            context = self.get_context_data(object_list=self.object_list, error="Bad date")
+            context = self.get_context_data(object_list=self.object_list, error="Bad date", pk=self.kwargs['animalid'])
             return self.render_to_response(context)
 
         start_d = datetime.strptime(start, '%Y-%m-%dT%H:%M')
         end_d = datetime.strptime(end, '%Y-%m-%dT%H:%M')
 
-        b = Walk.objects.filter(starting__lte=start_d).filter(starting__gte=start_d)
-        c = Walk.objects.filter(starting__lte=end_d).filter(starting__gte=end_d)
-        if b.exists() or c.exists():
+        if start_d >= end_d or start_d < datetime.today():
             self.object_list = self.get_queryset()
-            context = self.get_context_data(object_list=self.object_list, error="overlap with another event")
+            context = self.get_context_data(object_list=self.object_list, error="Bad date", pk=self.kwargs['animalid'])
             return self.render_to_response(context)
+
+        b = Walk.objects.filter(starting__lte=start_d).filter(ending__gte=start_d).filter(starting__lte=end_d).filter(ending__gte=end_d)
+        d = Walk.objects.all()[:1]
+        if b.exists():
+            if d.exists():
+                self.object_list = self.get_queryset()
+                context = self.get_context_data(object_list=self.object_list, error="overlap with another event", pk=self.kwargs['animalid'])
+                return self.render_to_response(context)
         Walk.objects.create(animal=a, starting=start_d, ending=end_d)
         self.object_list = self.get_queryset()
-        context = self.get_context_data(object_list=self.object_list)
+        context = self.get_context_data(object_list=self.object_list, pk=self.kwargs['animalid'])
+        return self.render_to_response(context)
+
+    def get(self, request, *args, **kwargs):
+        walk_id = request.GET.get('walk', '')
+        if walk_id != '':
+            to_delete = request.GET.get('delete', '')
+            to_confirm = request.GET.get('confirm', '')
+            walk = Walk.objects.get(pk=int(walk_id))
+            if to_delete != '' and walk.status == "not confirmed" and to_delete.isdecimal():
+                #Walk.objects.filter(pk=int(to_delete)).delete()
+                walk.delete()
+            elif to_confirm == '1' and walk.status == "not confirmed" and walk.walker_id is not None:
+                walk.status = "confirmed"
+                walk.save()
+            elif to_confirm == '0' and walk.status == "confirmed":
+                walk.status = "not confirmed"
+                walk.save()
+
+        self.object_list = self.get_queryset()
+        allow_empty = self.get_allow_empty()
+
+        if not allow_empty:
+            if self.get_paginate_by(self.object_list) is not None and hasattr(
+                self.object_list, "exists"
+            ):
+                is_empty = not self.object_list.exists()
+            else:
+                is_empty = not self.object_list
+            if is_empty:
+                raise Http404("Empty list and “%(class_name)s.allow_empty” is False.")
+        context = self.get_context_data(pk=self.kwargs['animalid'])
         return self.render_to_response(context)
 
     def get_queryset(self):
-        queryset = Walk.objects.filter(animal_id=self.kwargs['animalid'])
+        queryset = Walk.objects.filter(animal_id=self.kwargs['animalid']).select_related('walker')
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -310,7 +347,151 @@ class AnimalWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponse
         return dict(list(context.items()) + list(c_def.items()))
 
     def test_func(self):
-        if self.request.user.position == "employee" or self.request.user.position == "verified":
+        if self.request.user.position == "employee":
+            return True
+        return False
+
+@method_decorator(login_required, name='dispatch')
+class UserWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMixin):
+    model = Walk
+    template_name = 'shelter/user_walks.html'
+    context_object_name = 'walks'
+    pk_url_kwarg = 'animalid'
+    paginate_by = 15
+
+    def get(self, request, *args, **kwargs):
+        walk_id = request.GET.get('walk', '')
+        if walk_id != '':
+            to_register = request.GET.get('register', '')
+            walk = Walk.objects.get(pk=int(walk_id))
+            if to_register == '1' and walk.status == "not confirmed" and walk.walker_id is None:
+                walk.status = "confirmed"
+                walk.walker_id = request.user.pk
+                walk.save()
+            elif to_register == '0' and (walk.status == "confirmed" or walk.status == "not confirmed") and walk.walker_id == request.user.pk:
+                walk.status = "not confirmed"
+                walk.walker_id = None
+                walk.save()
+
+        self.object_list = self.get_queryset()
+        allow_empty = self.get_allow_empty()
+
+        if not allow_empty:
+            if self.get_paginate_by(self.object_list) is not None and hasattr(
+                    self.object_list, "exists"
+            ):
+                is_empty = not self.object_list.exists()
+            else:
+                is_empty = not self.object_list
+            if is_empty:
+                raise Http404("Empty list and “%(class_name)s.allow_empty” is False.")
+        context = self.get_context_data(pk=self.kwargs['animalid'])
+        return self.render_to_response(context)
+
+    def get_queryset(self):
+        queryset = Walk.objects.filter(animal_id=self.kwargs['animalid']).select_related('walker')
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Walks")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def test_func(self):
+        if self.request.user.position == "verified":
+            return True
+        return False
+
+@method_decorator(login_required, name='dispatch')
+class UserProfileWalks(DataMixin, BaseListView, TemplateResponseMixin):
+    model = Walk
+    template_name = 'shelter/mypage.html'
+    context_object_name = 'walks'
+    paginate_by = 10
+
+    def get(self, request, *args, **kwargs):
+        if request.user.position == "verified":
+            walk_id = request.GET.get('walk', '')
+            if walk_id != '':
+                to_register = request.GET.get('register', '')
+                walk = Walk.objects.get(pk=int(walk_id))
+                if to_register == '0' and (walk.status == "confirmed" or walk.status == "not confirmed") and walk.walker_id == request.user.pk:
+                    walk.status = "not confirmed"
+                    walk.walker_id = None
+                    walk.save()
+
+        self.object_list = self.get_queryset(request)
+        allow_empty = self.get_allow_empty()
+
+        if not allow_empty:
+            if self.get_paginate_by(self.object_list) is not None and hasattr(
+                    self.object_list, "exists"
+            ):
+                is_empty = not self.object_list.exists()
+            else:
+                is_empty = not self.object_list
+            if is_empty:
+                raise Http404("Empty list and “%(class_name)s.allow_empty” is False.")
+        context = self.get_context_data()
+        return self.render_to_response(context)
+
+    def get_queryset(self, request):
+        queryset = Walk.objects.filter(walker_id=request.user.pk).select_related('walker')
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Walks")
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+@method_decorator(login_required, name='dispatch')
+class TodayWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMixin):
+    model = Walk
+    template_name = 'shelter/today_walks.html'
+    context_object_name = 'walks'
+    paginate_by = 15
+
+    def get(self, request, *args, **kwargs):
+        walk_id = request.GET.get('walk', '')
+        if walk_id != '':
+            start = request.GET.get('start', '')
+            end = request.GET.get('end', '')
+            walk = Walk.objects.get(pk=int(walk_id))
+            if start == '1' and walk.status == "confirmed":
+                walk.status = "started"
+                walk.save()
+            if end == '1' and walk.status == "started":
+                walk.status = "end"
+                walk.save()
+
+        self.object_list = self.get_queryset()
+        allow_empty = self.get_allow_empty()
+
+        if not allow_empty:
+            if self.get_paginate_by(self.object_list) is not None and hasattr(
+                    self.object_list, "exists"
+            ):
+                is_empty = not self.object_list.exists()
+            else:
+                is_empty = not self.object_list
+            if is_empty:
+                raise Http404("Empty list and “%(class_name)s.allow_empty” is False.")
+        context = self.get_context_data()
+        return self.render_to_response(context)
+
+    def get_queryset(self):
+        today = datetime.today()
+        queryset = Walk.objects.filter((Q(starting__gte=date.today()) & Q(starting__lt=(datetime.today() + timedelta(days=1))) & Q(status="confirmed")) | Q(status="started"))
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Walks")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def test_func(self):
+        if self.request.user.position == "employee":
             return True
         return False
 

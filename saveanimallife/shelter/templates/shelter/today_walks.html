@@ -1,0 +1,28 @@
+{% extends 'shelter/base.html' %}
+
+{% block content %}
+<h1>{{title}}</h1>
+
+<table>
+    <tr><th>Start</th><th>End</th><th>Volunteer</th><th>Status</th><th></th></tr>
+{% for walk in walks %}
+    <tr>
+        <th> {{walk.starting|date:"d.m.Y H:i"}}</th>
+        <th>{{walk.ending|date:"d.m.Y H:i"}}</th>
+        <th>
+            {% if walk.walker_id%}
+            <a href="{% url 'show_user' walk.walker_id %}">{{walk.walker.username}}</a>
+            {% endif %}
+        </th>
+        <th>{{walk.status}}</th>
+        <th>
+            {% if walk.status == 'confirmed' %}
+            <a href="{% url 'today_walks' %}?start=1&walk={{walk.pk}}">Start</a>
+            {% elif walk.status == 'started' %}
+            <a href="{% url 'today_walks' %}?end=1&walk={{walk.pk}}">End</a>
+            {% endif %}
+        </th>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
