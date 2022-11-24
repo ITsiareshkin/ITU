@@ -1,13 +1,15 @@
 {% extends 'shelter/base.html' %}
 {% block content %}
-{% if user.position == "admin" %}
-<a href="{% url 'adduser' %}">Add user</a> <br><br>
-{% endif %}
-{% for account in accounts %}
-username : <a href="{% url 'show_user' account.pk %}">{{account.username}}</a><br>
-Name     : {{account.name}}<br>
-Surname  : {{account.surname}}<br>
-email    : {{account.email}}<br>
-status   : {{account.position}}<br><br>
-{% endfor %}
+    <div class="container">
+        {% for account in accounts %}
+            username : <a href="{% url 'show_user' account.username %}">{{account.username}}</a><br>
+            Name     : {{account.name}}<br>
+            Surname  : {{account.surname}}<br>
+            email    : {{account.email}}<br>
+            status   : {{account.position}}<br><br>
+        {% endfor %}
+    </div>
+    {% if user.position == "admin" %}
+        <a href="#">Add user</a> <br><br>
+    {% endif %}
 {% endblock %}

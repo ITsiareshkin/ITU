@@ -10,6 +10,9 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import *
+<<<<<<< HEAD
+from django.views.generic.list import BaseListView
+=======
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.list import BaseListView
 from django.db.models import Q
@@ -17,7 +20,10 @@ from django.db import connection
 
 from datetime import date, datetime, timedelta
 
+>>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
 # from django.views.generic.edit import BaseCreateView
+from django.views.generic.base import TemplateResponseMixin
+import sys
 
 from .forms import *
 from .utils import *
@@ -35,19 +41,57 @@ class ShelterHome(DataMixin, TemplateView):
         c_def = self.get_user_context(title="Home page")
         return dict(list(context.items()) + list(c_def.items()))
 
+<<<<<<< HEAD
+class AnimalList(DataMixin, BaseListView, TemplateResponseMixin):
+=======
 
 class AnimalList(DataMixin, ListView):
+>>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
     model = Animal
     template_name = 'shelter/animal.html'
     context_object_name = 'animal'
 
+    def get(self, request, *args, **kwargs):
+        f_kind = request.GET.get('kind', '')
+        f_gender = request.GET.get('gender', '')
+        f_age = request.GET.get('age', '')
+        self.object_list = Animal.objects.all()
+
+        if f_kind != '':
+            if f_kind == 'cat':
+                self.object_list = self.object_list.filter(kind='Cat')
+            elif f_kind == 'dog':
+                self.object_list = self.object_list.filter(kind='Dog')
+
+        if f_gender != '':
+            if f_gender == 'female':
+                self.object_list = self.object_list.filter(gender='Female')
+            elif f_gender == 'male':
+                self.object_list = self.object_list.filter(gender='Male')
+
+        if f_age != '':
+            if f_age == 'baby':
+                self.object_list = self.object_list.filter(age__lte='1')
+            elif f_age == 'teen':
+                self.object_list = self.object_list.filter(age__gt='1', age__lt='5')
+            elif f_age == 'adult':
+                self.object_list = self.object_list.filter(age__gte='5')
+
+
+        context = self.get_context_data(object_list=self.object_list)
+        return self.render_to_response(context)
+    #
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Animals"
         context['menu'] = menu
         return context
 
+<<<<<<< HEAD
+@method_decorator(login_required, name='dispatch')
+=======
 
+>>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
 class AnimalProfile(DataMixin, DetailView):
     model = Animal
     template_name = 'shelter/animal_profile.html'
@@ -56,15 +100,44 @@ class AnimalProfile(DataMixin, DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+<<<<<<< HEAD
+        context['title'] = context['animal']
+=======
         context['title'] = "AAAAAA"  # FIX: display animal name
+>>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
         context['menu'] = menu
         return context
 
 
 @method_decorator(login_required, name='dispatch')
+class EditAnimal(DataMixin, UserPassesTestMixin, UpdateView):
+    model = Animal
+    template_name = 'shelter/edit_animal_profile.html'
+    form_class = EditAnimalForm
+    pk_url_kwarg = 'animalid'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Animal profile")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def test_func(self):
+        if self.request.user.position == "employee":
+            return True
+        return False
+
+    def get_success_url(self):
+        return reverse_lazy('animals')
+
+
 class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
+<<<<<<< HEAD
+    paginate_by = 5 # wtf
+    form_class = AddAnimalForm
+=======
     paginate_by = 5  # wtf
     form_class = AddAnimal
+>>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
     template_name = 'shelter/addanimal.html'
     success_url = reverse_lazy('animals')
 
@@ -78,6 +151,8 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
         c_def = self.get_user_context(title="Add animal")
         return dict(list(context.items()) + list(c_def.items()))
 
+<<<<<<< HEAD
+=======
 
 # def addanimal(request):
 #     if request.method == 'POST':
@@ -89,6 +164,7 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
 #         form = AddAnimal()
 #     return render(request, '')
 
+>>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
 
 def about_us(request):
     context = {
@@ -174,7 +250,8 @@ class ShowUserPage(UserPassesTestMixin, DetailView):
     model = Account
     template_name = 'shelter/userpage.html'
     context_object_name = 'account'
-    pk_url_kwarg = 'userid'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
 
     def get(self, request, *args, **kwargs):
         to_verify = request.GET.get('verify', '')
@@ -249,7 +326,8 @@ class ShowUsers(UserPassesTestMixin, ListView):
     model = Account
     template_name = 'shelter/users.html'
     context_object_name = 'accounts'
-    pk_url_kwarg = 'userid'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
 
     def test_func(self):
         if self.request.user.position == "employee" or self.request.user.position == "admin":
@@ -264,6 +342,14 @@ class ShowUsers(UserPassesTestMixin, ListView):
 
 
 @method_decorator(login_required, name='dispatch')
+<<<<<<< HEAD
+class UserEdit(DataMixin, UserPassesTestMixin, generic.UpdateView):
+    model = Account
+    template_name = 'shelter/edit_profile.html'
+    form_class = EditUserForm
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+=======
 class ManageAnimalWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMixin):
     model = Walk
     template_name = 'shelter/manage_walks.html'
@@ -357,6 +443,7 @@ class ManageAnimalWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateRe
         if self.request.user.position == "employee":
             return True
         return False
+>>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
 
 
 @method_decorator(login_required, name='dispatch')

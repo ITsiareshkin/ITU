@@ -22,22 +22,44 @@ class RegisterUserForm(UserCreationForm):
         model = Account
         fields = ('username', 'email', 'password1', 'password2')
 
-class AddAnimal(forms.ModelForm):
+KIND_CHOICES = (
+    ('Dog', 'Dog'),
+    ('Cat', 'Cat')
+)
+
+GENDER_CHOICES = (
+    ('Male', 'Male'),
+    ('Female', 'Female')
+
+)
+
+class AddAnimalForm(forms.ModelForm):
     name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
-    kind = forms.CharField(max_length=15, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    kind = forms.ChoiceField(required=True, choices=KIND_CHOICES)
     breed = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
     age = forms.IntegerField(required=True, widget=forms.TextInput(attrs={'class': 'form-input'})) # IntegerInput ?
     color = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
-    gender = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    gender = forms.ChoiceField(required=True, choices=GENDER_CHOICES)
     discription = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
     photo = forms.ImageField(required=True)
     class Meta:
         model = Animal
         fields = ['name', 'kind', 'breed', 'age', 'color', 'gender', 'discription', 'photo']
-        #fields = '__all__'
-        # widgets = {
-        #     ''
-        # }
+
+
+class EditAnimalForm(forms.ModelForm):
+    name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    kind = forms.ChoiceField(required=True, choices=KIND_CHOICES)
+    breed = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    age = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-input'}))  # IntegerInput ?
+    color = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    gender = forms.ChoiceField(required=True, choices=GENDER_CHOICES)
+    discription = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
+    photo = forms.ImageField()
+
+    class Meta:
+        model = Animal
+        fields = ['name', 'kind', 'breed', 'age', 'color', 'gender', 'discription', 'photo']
 
 
 class AdminAddUserForm(UserCreationForm):
@@ -70,7 +92,7 @@ class EditProfileForm(forms.ModelForm):
         fields = ('name', 'surname', 'email')
 
 
-POSITION_CHOICES= [
+POSITION_CHOICES = [
     ('admin', 'admin'),
     ('vet', 'vet'),
     ('verified', 'verified'),
