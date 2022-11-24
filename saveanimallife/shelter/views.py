@@ -10,20 +10,15 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import *
-<<<<<<< HEAD
 from django.views.generic.list import BaseListView
-=======
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.list import BaseListView
 from django.db.models import Q
 from django.db import connection
 
 from datetime import date, datetime, timedelta
-
->>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
-# from django.views.generic.edit import BaseCreateView
+from django.views.generic.edit import BaseCreateView
 from django.views.generic.base import TemplateResponseMixin
-import sys
 
 from .forms import *
 from .utils import *
@@ -41,12 +36,8 @@ class ShelterHome(DataMixin, TemplateView):
         c_def = self.get_user_context(title="Home page")
         return dict(list(context.items()) + list(c_def.items()))
 
-<<<<<<< HEAD
-class AnimalList(DataMixin, BaseListView, TemplateResponseMixin):
-=======
 
 class AnimalList(DataMixin, ListView):
->>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
     model = Animal
     template_name = 'shelter/animal.html'
     context_object_name = 'animal'
@@ -80,31 +71,24 @@ class AnimalList(DataMixin, ListView):
 
         context = self.get_context_data(object_list=self.object_list)
         return self.render_to_response(context)
-    #
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Animals"
         context['menu'] = menu
         return context
 
-<<<<<<< HEAD
-@method_decorator(login_required, name='dispatch')
-=======
 
->>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
+@method_decorator(login_required, name='dispatch')
 class AnimalProfile(DataMixin, DetailView):
     model = Animal
     template_name = 'shelter/animal_profile.html'
-    pk_url_kwarg = 'animalid'  # make slug
+    pk_url_kwarg = 'animalid'
     context_object_name = 'animal'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-<<<<<<< HEAD
         context['title'] = context['animal']
-=======
-        context['title'] = "AAAAAA"  # FIX: display animal name
->>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
         context['menu'] = menu
         return context
 
@@ -131,13 +115,8 @@ class EditAnimal(DataMixin, UserPassesTestMixin, UpdateView):
 
 
 class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
-<<<<<<< HEAD
     paginate_by = 5 # wtf
     form_class = AddAnimalForm
-=======
-    paginate_by = 5  # wtf
-    form_class = AddAnimal
->>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
     template_name = 'shelter/addanimal.html'
     success_url = reverse_lazy('animals')
 
@@ -150,21 +129,6 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Add animal")
         return dict(list(context.items()) + list(c_def.items()))
-
-<<<<<<< HEAD
-=======
-
-# def addanimal(request):
-#     if request.method == 'POST':
-#         form = AddAnimal(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('animals')
-#     else:
-#         form = AddAnimal()
-#     return render(request, '')
-
->>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
 
 def about_us(request):
     context = {
@@ -201,16 +165,6 @@ class Login(DataMixin, LoginView):
 def logout_user(request):
     logout(request)
     return redirect('login')
-
-
-# @method_decorator(login_required, name='dispatch')
-# class Mypage(DataMixin, TemplateView):
-#     template_name = 'shelter/mypage.html'
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         c_def = self.get_user_context(title="My profile")
-#         return dict(list(context.items()) + list(c_def.items()))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -284,7 +238,8 @@ class UserEdit(DataMixin, UserPassesTestMixin, generic.UpdateView):
     model = Account
     template_name = 'shelter/edit_profile.html'
     form_class = EditUserForm
-    pk_url_kwarg = 'userid'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -341,15 +296,6 @@ class ShowUsers(UserPassesTestMixin, ListView):
         return context
 
 
-@method_decorator(login_required, name='dispatch')
-<<<<<<< HEAD
-class UserEdit(DataMixin, UserPassesTestMixin, generic.UpdateView):
-    model = Account
-    template_name = 'shelter/edit_profile.html'
-    form_class = EditUserForm
-    slug_field = 'username'
-    slug_url_kwarg = 'username'
-=======
 class ManageAnimalWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMixin):
     model = Walk
     template_name = 'shelter/manage_walks.html'
@@ -443,7 +389,6 @@ class ManageAnimalWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateRe
         if self.request.user.position == "employee":
             return True
         return False
->>>>>>> bce4f03e889e35d746f6f272f421491dca79369b
 
 
 @method_decorator(login_required, name='dispatch')
@@ -786,6 +731,7 @@ class NewTasks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMix
         if self.request.user.position == "vet":
             return True
         return False
+
 
 class MyTasks(NewTasks):
     def get_queryset(self):
