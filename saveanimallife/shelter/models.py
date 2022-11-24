@@ -68,7 +68,7 @@ class Account(AbstractBaseUser):
         return True
 
     def get_absolute_url(self):
-        return reverse('user', kwargs={'userid': self.pk})
+        return reverse('user', kwargs={'userslug': self.username})
 
 
 class Animal(models.Model):

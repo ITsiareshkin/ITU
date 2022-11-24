@@ -81,7 +81,7 @@ ul.list-articles li {
 }
 
 .logo {
-	background: url('../images/logo.png') no-repeat 10px 5px;
+	background: url('../images/logo.jpg') no-repeat 10px 5px;
 	width: 70px;
 	height: 60px;
 }
@@ -436,12 +436,10 @@ ul.lang-list li a:hover {color: #fdc073;}
 /*********************animal list fix************************/
 .container {
 	width: 100%;
-	height: auto;
     padding-right: 15px;
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto;
-	align-items: center;
 }
 
 .filters {

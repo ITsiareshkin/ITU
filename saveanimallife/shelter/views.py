@@ -204,7 +204,8 @@ class ShowUserPage(UserPassesTestMixin, DetailView):
     model = Account
     template_name = 'shelter/userpage.html'
     context_object_name = 'account'
-    pk_url_kwarg = 'userid'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
 
     def test_func(self):
         if self.request.user.position == "employee" or self.request.user.position == "admin":
@@ -224,7 +225,8 @@ class ShowUsers(UserPassesTestMixin, ListView):
     model = Account
     template_name = 'shelter/users.html'
     context_object_name = 'accounts'
-    pk_url_kwarg = 'userid'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
 
     def test_func(self):
         if self.request.user.position == "employee" or self.request.user.position == "admin":
@@ -243,7 +245,8 @@ class UserEdit(DataMixin, UserPassesTestMixin, generic.UpdateView):
     model = Account
     template_name = 'shelter/edit_profile.html'
     form_class = EditUserForm
-    pk_url_kwarg = 'userid'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
 
 
     def get_context_data(self, *, object_list=None, **kwargs):

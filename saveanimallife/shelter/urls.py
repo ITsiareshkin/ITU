@@ -16,7 +16,7 @@ urlpatterns = [
     path('register/', Register.as_view(), name='register'),
     path('edit_profile/', EditProfile.as_view(), name='edit_profile'),
     path('change_password/', PasswordChange.as_view(), name='change_password'),
-    path('user/<int:userid>/', ShowUserPage.as_view(), name='show_user'),
-    path('user/edit/<int:userid>', UserEdit.as_view(), name='user_edit'),
+    path('user/<username>/', ShowUserPage.as_view(), name='show_user'),
+    path('user/edit/<username>', UserEdit.as_view(), name='user_edit'),
     path('users/', ShowUsers.as_view(), name='users'),
 ]
