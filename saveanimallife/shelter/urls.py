@@ -23,4 +23,9 @@ urlpatterns = [
     path('manage_walks/<int:animalid>/', ManageAnimalWalks.as_view(), name="manage_walks"),
     path('user_walks/<int:animalid>/', UserWalks.as_view(), name="user_walks"),
     path('today_walks/', TodayWalks.as_view(), name="today_walks"),
+
+    path('manage_tasks/<int:animalid>/', ManageTasksForVet.as_view(), name="manage_tasks"),
+    path('task/<int:taskid>/', ShowTask.as_view(), name="task"),
+    path('new_tasks/', NewTasks.as_view(), name="new_tasks"),
+    path('my_tasks/', NewTasks.as_view(), name="my_tasks"),
 ]

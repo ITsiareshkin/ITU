@@ -4,15 +4,18 @@
 <h1>{{title}}</h1>
 
 <table>
-    <tr><th>Start</th><th>End</th><th>Volunteer</th><th>Status</th><th></th></tr>
+    <tr><th>Start</th><th>End</th><th>Animal</th><th>Volunteer</th><th>Status</th><th></th></tr>
 {% for walk in walks %}
     <tr>
         <th> {{walk.starting|date:"d.m.Y H:i"}}</th>
         <th>{{walk.ending|date:"d.m.Y H:i"}}</th>
         <th>
             {% if walk.walker_id%}
-            <a href="{% url 'show_user' walk.walker_id %}">{{walk.walker.username}}</a>
+            <a href="{% url 'animal' walk.animal_id %}">{{walk.animal.name}}</a>
             {% endif %}
+        </th>
+        <th>
+            <a href="{% url 'show_user' walk.walker_id %}">{{walk.walker.username}}</a>
         </th>
         <th>{{walk.status}}</th>
         <th>

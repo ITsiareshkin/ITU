@@ -1,0 +1,46 @@
+{% extends 'shelter/base.html' %}
+
+{% block content %}
+<h1>{{title}}</h1>
+
+{% if user.position == "employee" %}
+<form method="post">
+    {% csrf_token %}
+<!--        <p><label class="form-label" for="description">Description: </label><input type="datetime-local" name="description" required id="description"></p>-->
+        <textarea rows = "5" cols = "60" name = "description">
+        </textarea><br>
+        <button type="submit">Create</button>
+</form>
+<br>
+{{error}}
+{%endif%}
+<br>
+<table>
+    <tr><th>Created</th><th>Start</th><th>End</th><th>Vet</th><th>Status</th><th></th><th></th><th></th></tr>
+{% for task in tasks %}
+    <tr>
+        <th> {{task.created|date:"d.m.Y H:i"}}</th>
+        <th> {{task.start|date:"d.m.Y H:i"}}</th>
+        <th>{{task.end|date:"d.m.Y H:i"}}</th>
+        <th>
+            {% if task.vet_id%}
+            <a href="{% url 'show_user' task.vet_id %}">{{task.vet.username}}</a>
+            {% endif %}
+        </th>
+        <th>{{task.status}}</th>
+        <th>
+            <a href="{% url 'task' task.pk %}">Details</a>
+        </th>
+        {% if user.position == "employee" %}
+        <th>
+            {% if  task.status != 'ended' %}
+            <a href="{% url 'manage_tasks' pk %}?delete=1&task={{task.pk}}">delete</a>
+            {% endif %}
+        </th>
+        {% else %}
+        <th></th>
+        {% endif %}
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
