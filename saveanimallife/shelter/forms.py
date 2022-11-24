@@ -4,6 +4,13 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from .models import *
 
+POSITION_CHOICES= [
+    ('admin', 'admin'),
+    ('vet', 'vet'),
+    ('verified', 'verified'),
+    ('unverified', 'unverified'),
+    ]
+
 
 class RegisterUserForm(UserCreationForm):
     username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-input'}))
@@ -31,6 +38,20 @@ class AddAnimal(forms.ModelForm):
         # widgets = {
         #     ''
         # }
+
+
+class AdminAddUserForm(UserCreationForm):
+    username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    password2 = forms.CharField(label='Password confirm', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    surname = forms.CharField(label='Surname', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    position = forms.CharField(label='Position', widget=forms.Select(choices=POSITION_CHOICES))
+
+    class Meta:
+        model = Account
+        fields = ('username', 'email', 'password1', 'password2', 'name', 'surname', 'position')
 
 
 class ChangePasswdForm(PasswordChangeForm):
@@ -67,3 +88,12 @@ class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'name', 'surname', 'position']
+
+
+class CreateWalkForm(forms.ModelForm):
+    starting = forms.DateTimeField(label='Beginning time', widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+    ending = forms.DateTimeField(label='End time', widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+
+    class Meta:
+        model = Walk
+        fields = ['starting', 'ending']

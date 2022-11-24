@@ -1,0 +1,47 @@
+{% extends 'shelter/base.html' %}
+
+{% block content %}
+<h1>{{title}}</h1>
+
+<form method="post">
+    {% csrf_token %}
+        <p><label class="form-label" for="id_starting">Beginning time: </label><input type="datetime-local" name="starting" required id="id_starting"></p>
+        <div class="form-error"></div>
+
+        <p><label class="form-label" for="id_ending">End time: </label><input type="datetime-local" name="ending" required id="id_ending"></p>
+        <div class="form-error"></div>
+
+        <button type="submit">Create</button>
+</form>
+    {{error}}
+<br>
+<table>
+    <tr><th>Start</th><th>End</th><th>Volunteer</th><th>Status</th><th></th><th></th></tr>
+{% for walk in walks %}
+    <tr>
+        <th> {{walk.starting|date:"d.m.Y H:i"}}</th>
+        <th>{{walk.ending|date:"d.m.Y H:i"}}</th>
+        <th>
+            {% if walk.walker_id%}
+            <a href="{% url 'show_user' walk.walker_id %}">{{walk.walker.username}}</a>
+            {% endif %}
+        </th>
+        <th>{{walk.status}}</th>
+        <th>
+            {% if  walk.status == 'not confirmed' %}
+            <a href="{% url 'manage_walks' pk %}?delete=1&walk={{walk.pk}}">delete</a>
+            {% endif %}
+        </th>
+        <th>
+            {% if walk.walker_id%}
+            {% if walk.status == 'not confirmed' %}
+            <a href="{% url 'manage_walks' pk %}?confirm=1&walk={{walk.pk}}">confirm</a>
+            {% elif walk.status == 'confirmed' %}
+            <a href="{% url 'manage_walks' pk %}?confirm=0&walk={{walk.pk}}">cancel</a>
+            {% endif %}
+            {% endif %}
+        </th>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}

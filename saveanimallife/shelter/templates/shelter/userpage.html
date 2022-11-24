@@ -7,9 +7,9 @@ Surname  : {{account.surname}}<br>
 email    : {{account.email}}<br>
 status   : {{account.position}}
 {% if account.position == "verified" %}
-<a href="#">verify</a>
+<a href="{% url 'show_user' account.pk %}?verify=0">unverify</a>
 {% elif  account.position == "unverified" %}
-<a href="#">unverify</a>
+<a href="{% url 'show_user' account.pk %}?verify=1">verify</a>
 {% endif %}
 <br>
 {% if user.position == "admin" %}

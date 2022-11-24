@@ -91,3 +91,33 @@ class Animal(models.Model):
 
     class Meta:
         ordering = ('-added',)
+
+
+class Walk(models.Model):
+    status = models.CharField(max_length=14, default="not confirmed")
+    walker = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE, null=False, blank=False)
+    starting = models.DateTimeField(default="not confirmed", null=False, blank=False)
+    ending = models.DateTimeField(default="not confirmed", null=False, blank=False)
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        ordering = ('-starting',)
+
+
+class Task(models.Model):
+    status = models.CharField(max_length=14, default="created")
+    vet = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE, null=False, blank=False)
+    description = models.CharField(max_length=100, null=False, blank=False)
+    task_start = models.DateTimeField(default=None, null=True)
+    task_end = models.DateTimeField(default=None, null=True)
+    created = models.DateTimeField(default=None, null=False)
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        ordering = ('-created',)
