@@ -28,5 +28,5 @@ urlpatterns = [
     path('manage_tasks/<int:animalid>/', ManageTasksForVet.as_view(), name="manage_tasks"),
     path('task/<int:taskid>/', ShowTask.as_view(), name="task"),
     path('new_tasks/', NewTasks.as_view(), name="new_tasks"),
-    path('my_tasks/', NewTasks.as_view(), name="my_tasks"),
+    path('my_tasks/', MyTasks.as_view(), name="my_tasks"),
 ]

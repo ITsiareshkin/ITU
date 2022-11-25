@@ -61,6 +61,10 @@ class EditAnimalForm(forms.ModelForm):
         model = Animal
         fields = ['name', 'kind', 'breed', 'age', 'color', 'gender', 'discription', 'photo']
 
+ADD_USER_CHOICES = [
+    ('vet', 'vet'),
+    ('employee', 'employee')
+]
 
 class AdminAddUserForm(UserCreationForm):
     username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-input'}))
@@ -69,7 +73,7 @@ class AdminAddUserForm(UserCreationForm):
     password2 = forms.CharField(label='Password confirm', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
     name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'class': 'form-input'}))
     surname = forms.CharField(label='Surname', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    position = forms.CharField(label='Position', widget=forms.Select(choices=POSITION_CHOICES))
+    position = forms.CharField(label='Position', widget=forms.Select(choices=ADD_USER_CHOICES))
 
     class Meta:
         model = Account
@@ -97,9 +101,9 @@ POSITION_CHOICES = [
     ('vet', 'vet'),
     ('verified', 'verified'),
     ('unverified', 'unverified'),
-    ]
+]
 
-
+####
 class EditUserForm(forms.ModelForm):
     username = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))

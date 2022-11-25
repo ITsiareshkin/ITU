@@ -79,7 +79,6 @@ class AnimalList(DataMixin, ListView):
         return context
 
 
-@method_decorator(login_required, name='dispatch')
 class AnimalProfile(DataMixin, DetailView):
     model = Animal
     template_name = 'shelter/animal_profile.html'
@@ -210,7 +209,7 @@ class ShowUserPage(UserPassesTestMixin, DetailView):
     def get(self, request, *args, **kwargs):
         to_verify = request.GET.get('verify', '')
         if to_verify != '':
-            edit_user = Account.objects.get(id=self.kwargs['userid'])
+            edit_user = Account.objects.get(username=self.kwargs['username'])
             if edit_user.position == 'unverified' and to_verify == '1':
                 edit_user.position = 'verified'
                 edit_user.save()
@@ -405,7 +404,6 @@ class UserWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMi
             to_register = request.GET.get('register', '')
             walk = Walk.objects.get(pk=int(walk_id))
             if to_register == '1' and walk.status == "not confirmed" and walk.walker_id is None:
-                walk.status = "confirmed"
                 walk.walker_id = request.user.pk
                 walk.save()
             elif to_register == '0' and (

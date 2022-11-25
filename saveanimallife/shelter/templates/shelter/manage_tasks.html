@@ -24,7 +24,11 @@
         <th>{{task.end|date:"d.m.Y H:i"}}</th>
         <th>
             {% if task.vet_id%}
-            <a href="{% url 'show_user' task.vet_id %}">{{task.vet.username}}</a>
+                {% if user.position == 'employee' %}
+                    <a href="{% url 'show_user' task.vet_id %}">{{task.vet.username}}</a>
+                {% else %}
+                    {{task.vet.username}}
+                {% endif %}
             {% endif %}
         </th>
         <th>{{task.status}}</th>
