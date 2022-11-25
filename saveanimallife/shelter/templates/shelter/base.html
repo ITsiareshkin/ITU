@@ -30,6 +30,10 @@
             	{% if user.position == "employee" %}
 				    <li><a href="{% url 'addanimal' %}">Add animal</a></li>
 				{% endif %}
+                {% if user.position == 'vet' %}
+                    <li><a href="{% url 'new_tasks' %}">New tasks</a></li>
+                    <li><a href="{% url 'my_tasks' %}">My tasks</a></li>
+                {% endif %}
 				{% if request.user.is_authenticated %}
 				    <li class="last"><a href="{% url 'mypage' %}">{{user.username}}</a> | <a href="{% url 'logout' %}">Log out</a></li>
 				{% else %}

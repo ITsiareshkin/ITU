@@ -23,7 +23,7 @@
         <th>{{walk.ending|date:"d.m.Y H:i"}}</th>
         <th>
             {% if walk.walker_id%}
-            <a href="{% url 'show_user' walk.walker_id %}">{{walk.walker.username}}</a>
+                <a href="{% url 'show_user' walk.walker.username %}">{{walk.walker.username}}</a>
             {% endif %}
         </th>
         <th>{{walk.status}}</th>
