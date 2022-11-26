@@ -2,7 +2,27 @@
 
 {% block content %}
 <h1>{{title}}</h1>
-
+    <div id="filters">
+        <form method="get">
+            <div class="row">
+                <div class="animal_filters">
+                    <select class="form-control" name="status" id="status">
+                        <option value="all">Walk status</option>
+                        <option value="free">free</option>
+                        <option value="not confirmed">not confirmed</option>
+                        <option value="confirmed">confirmed</option>
+                        <option value="started">started</option>
+                        <option value="end">end</option>
+                    </select>
+                </div>
+                Date: <input type="date" name="date"/>
+                <div class="animal_filters">
+                    <button type="submit" class="animal_btn">Find</button>
+                </div>
+            </div>
+        </form>
+        {{error}}
+    </div>
 <table>
     <tr><th>Start</th><th>End</th><th>Animal</th><th>Volunteer</th><th>Status</th><th></th></tr>
 {% for walk in walks %}
@@ -10,9 +30,7 @@
         <th> {{walk.starting|date:"d.m.Y H:i"}}</th>
         <th>{{walk.ending|date:"d.m.Y H:i"}}</th>
         <th>
-            {% if walk.walker_id%}
             <a href="{% url 'animal' walk.animal_id %}">{{walk.animal.name}}</a>
-            {% endif %}
         </th>
         <th>
             <a href="{% url 'show_user' walk.walker_id %}">{{walk.walker.username}}</a>
