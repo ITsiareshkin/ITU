@@ -29,6 +29,7 @@
 				{% endif %}
             	{% if user.position == "employee" %}
 				    <li><a href="{% url 'addanimal' %}">Add animal</a></li>
+					<li><a href="{% url 'today_walks' %}">Walks</a></li>
 				{% endif %}
                 {% if user.position == 'vet' %}
                     <li><a href="{% url 'new_tasks' %}">New tasks</a></li>
