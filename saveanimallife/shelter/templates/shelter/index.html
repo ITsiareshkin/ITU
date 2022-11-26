@@ -1,2 +1,31 @@
 {% extends 'shelter/base.html' %}
 
+{% block content %}
+<h2>Welcome to the website of our animal shelter.</h2>
+We provide:
+<ul>
+  <li>Animal shelter</li>
+  <li>Caring for animals in cooperation with veterinarians</li>
+  <li>Walks with animals</li>
+</ul>
+<h2>Meet our newcomers:</h2>
+<div class="row">
+    {% for a in animal %}
+        <div class="animal-item">
+            <a href="{{ a.get_absolute_url }}">
+                <div class="animal-image-list">
+                    <img src="{{ a.photo.url }}" alt="">
+                </div>
+                <div class="animal-description-">
+                    <div class="animal-name-list ">
+                        {{ a.name }}
+                    </div>
+                    <div class="animal-info-list">
+                        {{ a.gender }} / {{ a.age }} y.o
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+
+{% endblock content %}

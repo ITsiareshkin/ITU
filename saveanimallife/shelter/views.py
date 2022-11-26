@@ -28,8 +28,14 @@ menu = [{'title': "Animals", 'url_name': 'animals'},
         {'title': "About us", 'url_name': 'about_us'}]
 
 
-class ShelterHome(DataMixin, TemplateView):
+class ShelterHome(DataMixin, ListView):
     template_name = 'shelter/index.html'
+    model = Animal
+    context_object_name = 'animal'
+
+    def get_queryset(self):
+        query = Animal.objects.all()[:3]
+        return query
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -246,7 +252,7 @@ class UserEdit(DataMixin, UserPassesTestMixin, generic.UpdateView):
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_success_url(self):
-        return reverse_lazy('mypage')
+        return reverse_lazy('user_edit', args = [self.kwargs['username']])
 
     def test_func(self):
         if self.request.user.position == "admin":
@@ -351,13 +357,14 @@ class ManageAnimalWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateRe
             except Walk.DoesNotExist:
                 walk = None
             if walk is not None:
-                if to_delete != '' and walk.status == "not confirmed" and to_delete.isdecimal():
+                if to_delete != '' and walk.status == "free" and to_delete.isdecimal():
                     walk.delete()
-                elif to_confirm == '1' and walk.status == "not confirmed" and walk.walker_id is not None:
+                elif to_confirm == '1' and walk.status == "not confirmed":
                     walk.status = "confirmed"
                     walk.save()
-                elif to_confirm == '0' and walk.status == "confirmed":
-                    walk.status = "not confirmed"
+                elif to_confirm == '0' and (walk.status == "confirmed" or walk.status == "confirmed"):
+                    walk.status = "free"
+                    walk.walker_id = None
                     walk.save()
 
         self.object_list = self.get_queryset()
@@ -403,12 +410,13 @@ class UserWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMi
         if walk_id != '':
             to_register = request.GET.get('register', '')
             walk = Walk.objects.get(pk=int(walk_id))
-            if to_register == '1' and walk.status == "not confirmed" and walk.walker_id is None:
+            if to_register == '1' and walk.status == "free":
                 walk.walker_id = request.user.pk
+                walk.status = "not confirmed"
                 walk.save()
             elif to_register == '0' and (
                     walk.status == "confirmed" or walk.status == "not confirmed") and walk.walker_id == request.user.pk:
-                walk.status = "not confirmed"
+                walk.status = "free"
                 walk.walker_id = None
                 walk.save()
 
@@ -507,7 +515,23 @@ class TodayWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseM
                 walk.status = "end"
                 walk.save()
 
-        self.object_list = self.get_queryset()
+        filter_date = self.request.GET.get('date', '')
+        filter_status = self.request.GET.get('status', '')
+
+        if not (re.fullmatch(r'^\d{4}-\d{2}-\d{2}', filter_date)) and filter_date != '':
+            self.object_list = Walk.objects.none()
+            context = self.get_context_data(error="Bad date")
+            return self.render_to_response(context)
+
+        self.object_list = Walk.objects.all()
+
+        if filter_date != '':
+            filter_date = datetime.strptime(filter_date, "%Y-%m-%d")
+            self.object_list = self.object_list.filter(Q(starting__gte=filter_date) & Q(starting__lte=(filter_date + timedelta(days=1))))
+            print(filter_date + timedelta(days=1))
+        if filter_status != 'all':
+            self.object_list = self.object_list.filter(status=filter_status)
+
         allow_empty = self.get_allow_empty()
 
         if not allow_empty:
@@ -523,10 +547,7 @@ class TodayWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseM
         return self.render_to_response(context)
 
     def get_queryset(self):
-        today = datetime.today()
-        queryset = Walk.objects.filter((Q(starting__gte=date.today()) & Q(
-            starting__lt=(datetime.today() + timedelta(days=1))) & Q(status="confirmed")) | Q(
-            status="started")).select_related('animal')
+        queryset = Walk.objects.all()#.filter(starting__gte=filter_date)
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):

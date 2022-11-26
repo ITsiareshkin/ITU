@@ -16,9 +16,9 @@
         </th>
         <th>{{walk.status}}</th>
         <th>
-            {% if walk.status == 'not confirmed' and walk.walker_id == None %}
+            {% if walk.status == 'free' and walk.walker_id == None %}
             <a href="{% url 'user_walks' pk %}?register=1&walk={{walk.pk}}">Register</a>
-            {% elif walk.status == 'confirmed' and walk.walker_id == user.pk  %}
+            {% elif walk.status == 'confirmed' or walk.status == 'not confirmed' and walk.walker_id == user.pk  %}
             <a href="{% url 'user_walks' pk %}?register=0&walk={{walk.pk}}">cancel</a>
             {% endif %}
         </th>
