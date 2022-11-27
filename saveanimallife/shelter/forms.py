@@ -4,13 +4,6 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from .models import *
 
-POSITION_CHOICES= [
-    ('admin', 'admin'),
-    ('vet', 'vet'),
-    ('verified', 'verified'),
-    ('unverified', 'unverified'),
-    ]
-
 
 class RegisterUserForm(UserCreationForm):
     username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-input'}))
@@ -33,14 +26,22 @@ GENDER_CHOICES = (
 
 )
 
+POSITION_CHOICES = (
+    ('admin', 'admin'),
+    ('vet', 'vet'),
+    ('employee', 'employee'),
+    ('verified', 'verified'),
+    ('unverified', 'unverified')
+)
+
 class AddAnimalForm(forms.ModelForm):
     name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
     kind = forms.ChoiceField(required=True, choices=KIND_CHOICES)
-    age = forms.IntegerField(required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    age = forms.IntegerField(required=True, min_value=1, max_value=25, widget=forms.TextInput(attrs={'class': 'form-input'}))
     gender = forms.ChoiceField(required=True, choices=GENDER_CHOICES)
-    color = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
-    breed = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
-    discription = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
+    color = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    breed = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    discription = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-input'}))
     photo = forms.ImageField(required=True)
     class Meta:
         model = Animal
@@ -51,11 +52,10 @@ class EditAnimalForm(forms.ModelForm):
     name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
     kind = forms.ChoiceField(required=True, choices=KIND_CHOICES)
     breed = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
-    age = forms.IntegerField(required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    age = forms.IntegerField(required=True, min_value=1, max_value=25, widget=forms.TextInput(attrs={'class': 'form-input'}))
     gender = forms.ChoiceField(required=True, choices=GENDER_CHOICES)
     color = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
-    breed = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
-    discription = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
+    discription = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-input'}))
     photo = forms.ImageField(required=True)
 
     class Meta:
@@ -63,14 +63,24 @@ class EditAnimalForm(forms.ModelForm):
         fields = ['name', 'kind', 'breed', 'age', 'color', 'gender', 'discription', 'photo']
 
 
+class EditAnimalHealthForm(forms.ModelForm):
+    health = forms.CharField(widget=forms.Textarea(attrs={'class': 'health-input'}))
+
+    class Meta:
+        model = Animal
+        fields = ['health']
+
+
+# class DeleteAnimalForm(forms.ModelForm):
+
+
 class AdminAddUserForm(UserCreationForm):
     username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-input'}))
     email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
     password2 = forms.CharField(label='Password confirm', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-    name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    surname = forms.CharField(label='Surname', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    position = forms.CharField(label='Position', widget=forms.Select(choices=POSITION_CHOICES))
+    name = forms.CharField(label='Name', required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    surname = forms.CharField(label='Surname', required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
 
     class Meta:
         model = Account
@@ -84,21 +94,14 @@ class ChangePasswdForm(PasswordChangeForm):
 
 
 class EditProfileForm(forms.ModelForm):
-    name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    surname = forms.CharField(label='Surname', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    name = forms.CharField(label='Name', required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    surname = forms.CharField(label='Surname', required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
     email = forms.CharField(label='email', widget=forms.TextInput(attrs={'class': 'form-input'}))
 
     class Meta:
         model = Account
         fields = ('name', 'surname', 'email')
 
-
-POSITION_CHOICES = [
-    ('admin', 'admin'),
-    ('vet', 'vet'),
-    ('verified', 'verified'),
-    ('unverified', 'unverified'),
-]
 
 class EditUserForm(forms.ModelForm):
     username = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
