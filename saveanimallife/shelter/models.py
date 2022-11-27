@@ -51,6 +51,7 @@ class Account(AbstractBaseUser):
     position = models.CharField(max_length=10, default="unverified")
     name = models.CharField(max_length=15, default="")
     surname = models.CharField(max_length=15, default="")
+    deleted = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'
 

@@ -31,4 +31,6 @@ urlpatterns = [
     path('task/<int:taskid>/', ShowTask.as_view(), name="task"),
     path('new_tasks/', NewTasks.as_view(), name="new_tasks"),
     path('my_tasks/', MyTasks.as_view(), name="my_tasks"),
+
+    path('accounts/login/', Login.as_view(), name='login_logout'),
 ]

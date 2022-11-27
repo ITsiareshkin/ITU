@@ -1,17 +1,16 @@
+import getopt
 import re
 
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView, PasswordChangeView
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import *
-from django.views.generic.list import BaseListView
-from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.list import BaseListView
 from django.db.models import Q
 from django.db import connection
@@ -163,7 +162,7 @@ def about_us(request):
     return render(request, 'shelter/about.html', context=context)
 
 
-class Register(DataMixin, CreateView):
+class Register(DataMixin, UserPassesTestMixin, CreateView):
     form_class = RegisterUserForm
     template_name = 'shelter/register.html'
     success_url = reverse_lazy('login')
@@ -173,10 +172,33 @@ class Register(DataMixin, CreateView):
         c_def = self.get_user_context(title="Register")
         return dict(list(context.items()) + list(c_def.items()))
 
+    def test_func(self):
+        return self.request.user.is_anonymous
 
 class Login(DataMixin, LoginView):
     form_class = AuthenticationForm
     template_name = 'shelter/login.html'
+
+    def post(self, request, *args, **kwargs):
+        a = request.POST.get('username', '')
+        try:
+            a_d = Account.objects.get(username=a).deleted
+        except:
+            a_d = None
+        if (a_d is not None) and (a_d is True):
+            context = {
+                'menu': menu,
+                'title': 'Error',
+                'error': "Account has been deleted"
+            }
+            return render(request, 'shelter/errors.html', context=context)
+        self.object = None
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        """Security check complete. Log the user in."""
+        login(self.request, form.get_user())
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -234,14 +256,16 @@ class ShowUserPage(UserPassesTestMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         to_verify = request.GET.get('verify', '')
+        to_delete = request.GET.get('delete', '')
+        edit_user = Account.objects.get(username=self.kwargs['username'])
         if to_verify != '':
-            edit_user = Account.objects.get(username=self.kwargs['username'])
             if edit_user.position == 'unverified' and to_verify == '1':
                 edit_user.position = 'verified'
                 edit_user.save()
             elif edit_user.position == 'verified' and to_verify == '0':
-                edit_user.position = 'unverified'
-                edit_user.save()
+                unverify_user(edit_user.pk)
+        if to_delete == '1':
+            delete_user(edit_user.pk)
         self.object = self.get_object()
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)

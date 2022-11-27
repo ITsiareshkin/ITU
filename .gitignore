@@ -2,3 +2,4 @@
 /is
 /venv
 *.pyc
+db.sqlite3
