@@ -16,29 +16,34 @@
     {{error}}
 <br>
 <table>
-    <tr><th>Start</th><th>End</th><th>Volunteer</th><th>Status</th><th></th><th></th></tr>
+    <tr>
+        <th>Start&nbsp&nbsp</th>
+        <th>End&nbsp&nbsp</th>
+        <th>Volunteer&nbsp&nbsp</th>
+        <th>Status</th>
+    </tr>
 {% for walk in walks %}
     <tr>
-        <th> {{walk.starting|date:"d.m.Y H:i"}}</th>
-        <th>{{walk.ending|date:"d.m.Y H:i"}}</th>
+        <th> {{walk.starting|date:"d.m.Y H:i"}} |</th>
+        <th>{{walk.ending|date:"d.m.Y H:i"}} |</th>
         <th>
             {% if walk.walker_id%}
                 <a href="{% url 'show_user' walk.walker.username %}">{{walk.walker.username}}</a>
             {% endif %}
         </th>
-        <th>{{walk.status}}</th>
+        <th>| {{walk.status}} |</th>
         <th>
             {% if  walk.status == 'free' %}
-            <a href="{% url 'manage_walks' pk %}?delete=1&walk={{walk.pk}}">delete</a>
+                <a href="{% url 'manage_walks' pk %}?delete=1&walk={{walk.pk}}">delete</a>
             {% endif %}
         </th>
         <th>
             {% if walk.walker_id%}
-            {% if walk.status == 'not confirmed' %}
-            <a href="{% url 'manage_walks' pk %}?confirm=1&walk={{walk.pk}}">confirm</a>
-            {% elif walk.status == 'confirmed' %}
-            <a href="{% url 'manage_walks' pk %}?confirm=0&walk={{walk.pk}}">cancel</a>
-            {% endif %}
+                {% if walk.status == 'not confirmed' %}
+                    <a href="{% url 'manage_walks' pk %}?confirm=1&walk={{walk.pk}}">confirm</a>
+                {% elif walk.status == 'confirmed' %}
+                    <a href="{% url 'manage_walks' pk %}?confirm=0&walk={{walk.pk}}">cancel</a>
+                {% endif %}
             {% endif %}
         </th>
     </tr>

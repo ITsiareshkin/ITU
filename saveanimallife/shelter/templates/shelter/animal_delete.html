@@ -1,0 +1,11 @@
+{% extends 'shelter/base.html' %}
+
+{% block content %}
+    <form action="{% url 'animal_delete' animal.pk %}" method="post">
+        {% csrf_token %}
+        <h3>Are you sure you want to delete the animal profile?</h3>
+        <a href="{% url 'animal' animal.pk %}">Cancel</a> |
+        <button type="submit" name="button" class="animal_btn">Delete</button>
+    </form>
+
+{% endblock %}

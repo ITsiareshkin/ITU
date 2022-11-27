@@ -28,7 +28,7 @@ menu = [{'title': "Animals", 'url_name': 'animals'},
 
 
 class ShelterHome(DataMixin, ListView):
-    template_name = 'shelter/index.html'
+    template_name = 'shelter/home.html'
     model = Animal
     context_object_name = 'animal'
 
@@ -46,6 +46,7 @@ class AnimalList(DataMixin, ListView):
     model = Animal
     template_name = 'shelter/animal.html'
     context_object_name = 'animal'
+    paginate_by = 20
 
     def get(self, request, *args, **kwargs):
         f_kind = request.GET.get('kind', '')
@@ -90,12 +91,32 @@ class AnimalProfile(DataMixin, DetailView):
     pk_url_kwarg = 'animalid'
     context_object_name = 'animal'
 
+    # def get(self, request, *args, **kwargs):
+    #     to_delete = request.GET.get('delete', '')
+    #     a = Animal.objects.get(pk=self.kwargs['animalid'])
+    #     if to_delete == '1':
+    #         a.delete()
+    #
+    #     self.object = self.get_object()
+    #     context = self.get_context_data(object=self.object)
+    #     return self.render_to_response(context)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = context['animal']
         context['menu'] = menu
         return context
 
+
+class AnimalDelete(View):
+    def get(self, request, *args, **kwargs):
+        animal = Animal.objects.get(pk=self.kwargs['animalid'])
+        return render(request, 'shelter/animal_delete.html', context={'animal': animal})
+
+    def post(self, request, *args, **kwargs):
+        animal = Animal.objects.get(pk=self.kwargs['animalid'])
+        animal.delete()
+        return redirect(reverse('animals'))
 
 @method_decorator(login_required, name='dispatch')
 class EditAnimal(DataMixin, UserPassesTestMixin, UpdateView):
@@ -119,7 +140,6 @@ class EditAnimal(DataMixin, UserPassesTestMixin, UpdateView):
 
 
 class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
-    paginate_by = 5 # wtf
     form_class = AddAnimalForm
     template_name = 'shelter/addanimal.html'
     success_url = reverse_lazy('animals')
@@ -139,7 +159,7 @@ def about_us(request):
         'menu': menu,
         'title': 'About Us'
     }
-    return render(request, 'shelter/index.html', context=context)
+    return render(request, 'shelter/about.html', context=context)
 
 
 class Register(DataMixin, UserPassesTestMixin, CreateView):
@@ -585,6 +605,29 @@ class TodayWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseM
         return False
 
 
+@method_decorator(login_required, name='dispatch')
+class EditHealth(DataMixin, UserPassesTestMixin, UpdateView):
+    model = Animal
+    template_name = 'shelter/edit_health.html'
+    form_class = EditAnimalHealthForm
+    pk_url_kwarg = 'animalid'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Walks")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def test_func(self):
+        if self.request.user.position == "vet":
+            return True
+        return False
+
+    def get_success_url(self):
+        return reverse_lazy('animals')
+
+
+
+
 class ManageTasksForVet(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMixin):
     model = Task
     template_name = 'shelter/manage_tasks.html'
@@ -780,12 +823,3 @@ class MyTasks(NewTasks):
     def get_queryset(self):
         queryset = Task.objects.filter(vet_id=self.request.user.pk)
         return queryset
-
-
-def plug(request):
-    context = {
-        'menu': menu,
-        'title': 'About Us'
-    }
-    print("WARNING PLUG")
-    return render(request, 'shelter/index.html', context=context)

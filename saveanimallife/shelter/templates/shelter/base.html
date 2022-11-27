@@ -7,81 +7,83 @@
 	<link type="text/css" href="{% static 'shelter/css/styles.css' %}" rel="stylesheet" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="shortcut icon" href="{% static 'shelter/images/logo.ico' %}" type="image/x-icon"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-<table class="table-page" border=0 cellpadding="0" cellspacing="0">
-<tr><td valign=top>
-{% block mainmenu %}
-		<div class="header">
-			<ul id="mainmenu" class="mainmenu">
-				<li class="logo">
-                    <a href="{% url 'home' %}">
-                        <div class="logo"></div>
-                    </a>
-                </li>
-				{% for m in menu %}
-				    <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
-				{% endfor %}
-				{% if user.position == "employee" or user.position == "admin" %}
-				    <li><a href="{% url 'users' %}">Users</a></li>
-				{% endif %}
-            	{% if user.position == "employee" %}
-				    <li><a href="{% url 'addanimal' %}">Add animal</a></li>
-					<li><a href="{% url 'today_walks' %}">Walks</a></li>
-				{% endif %}
-                {% if user.position == 'vet' %}
-                    <li><a href="{% url 'new_tasks' %}">New tasks</a></li>
-                    <li><a href="{% url 'my_tasks' %}">My tasks</a></li>
-                {% endif %}
-				{% if request.user.is_authenticated %}
-				    <li class="last"><a href="{% url 'mypage' %}">{{user.username}}</a> | <a href="{% url 'logout' %}">Log out</a></li>
-				{% else %}
-				    <li class="last"><a href="{% url 'register' %}">Register</a> | <a href="{% url 'login' %}">Log in</a></li>
-				{% endif %}
-			</ul>
-			<div class="clear"></div>
-		</div>
-{% endblock mainmenu %}
+    <table class="table-page" border=0 cellpadding="0" cellspacing="0">
+        <tr>
+            <td valign=top>
+                {% block mainmenu %}
+                    <div class="header">
+                            <ul id="mainmenu" class="mainmenu">
+                                <li class="logo">
+                                    <a href="{% url 'home' %}">
+                                        <div class="logo"></div>
+                                    </a>
+                                </li>
+                                {% for m in menu %}
+                                    <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
+                                {% endfor %}
+                                {% if user.position == "employee" or user.position == "admin" %}
+                                    <li><a href="{% url 'users' %}">Users</a></li>
+                                {% endif %}
+                                {% if user.position == "employee" %}
+                                    <li><a href="{% url 'addanimal' %}">Add animal</a></li>
+                                    <li><a href="{% url 'today_walks' %}">Walks</a></li>
+                                {% endif %}
+                                {% if user.position == 'vet' %}
+                                    <li><a href="{% url 'new_tasks' %}">New tasks</a></li>
+                                    <li><a href="{% url 'my_tasks' %}">My tasks</a></li>
+                                {% endif %}
+                                {% if request.user.is_authenticated %}
+                                    <li class="last"><a href="{% url 'mypage' %}">{{user.username}}</a> | <a href="{% url 'logout' %}">Log out</a></li>
+                                {% else %}
+                                    <li class="last"><a href="{% url 'register' %}">Register</a> | <a href="{% url 'login' %}">Log in</a></li>
+                                {% endif %}
+                            </ul>
+                            <div class="clear"></div>
+                        </div>
+                {% endblock mainmenu %}
+                <table class="table-content" border=0 cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td valign="top" class="content">
+                            <!-- Content -->
+                            <div class="content-text">
+                                {% block content %}
+                                {% endblock %}
+                                {% if page_obj.has_other_pages %}
+                                    {% if page_obj.has_previous %}
+                                        <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+                                    {% endif %}
 
+                                    {% for p in paginator.page_range %}
+                                        {% if page_obj.number == p %}
+                                            {{ p }}
+                                        {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2  %}
+                                            <a href="?page={{ p }}">{{ p }}</a>
+                                        {% endif %}
+                                    {% endfor %}
 
-<table class="table-content" border=0 cellpadding="0" cellspacing="0">
-
-<td valign="top" class="content">
-
-<!-- Content -->
-<div class="content-text">
-    {% block content %}
-    {% endblock %}
-    {% if page_obj.has_other_pages %}
-        {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
-        {% endif %}
-
-        {% for p in paginator.page_range %}
-            {% if page_obj.number == p %}
-                {{ p }}
-            {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2  %}
-                <a href="?page={{ p }}">{{ p }}</a>
-            {% endif %}
-        {% endfor %}
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
-        {% endif %}
-    {% endif %}
-</div>
-<!-- End content -->
-
-</td></tr></table>
-</td></tr>
-<!-- Footer -->
-<tr><td valign=top>
-	<div id="footer">
-		<p>ВСЯКАЯ ИНФА ВНИЗУ</p>
-	</div>
-</td></tr></table>
-<!-- End footer -->
+                                    {% if page_obj.has_next %}
+                                        <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <!-- End content -->
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <!-- Footer -->
+        <tr>
+            <td valign=top>
+                <div id="footer">
+                </div>
+            </td>
+        </tr>
+        <!-- End footer -->
+    </table>
 </body>
 </html>

@@ -1,11 +1,11 @@
 {% extends 'shelter/base.html' %}
 
 {% block content %}
-    <h2>Edit Animal profile</h2>
-    <form method="post" enctype="multipart/form-data">
+    <h3>Edit Animal health:</h3>
+    <form method="post" >
         {% csrf_token %}
         {% for f in form %}
-            <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+            <p><label class="form-label" for="{{ f.id_for_label }}"></label> <br> {{ f }}</p>
             <div class="form-error">{{ f.errors }}</div>
         {% endfor %}
         <button type="submit">Save changes</button>
