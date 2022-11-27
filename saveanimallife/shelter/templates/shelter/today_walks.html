@@ -1,12 +1,13 @@
 {% extends 'shelter/base.html' %}
 
 {% block content %}
-<h1>{{title}}</h1>
+<div class="container">
     <div id="filters">
+        <h1>{{title}}</h1>
         <form method="get">
-            <div class="row">
+            <div class="seelct-row">
                 <div class="animal_filters">
-                    <select class="form-control" name="status" id="status">
+                    <select class="select-walk" name="status" id="status">
                         <option value="all">Walk status</option>
                         <option value="free">free</option>
                         <option value="not confirmed">not confirmed</option>
@@ -15,7 +16,7 @@
                         <option value="end">end</option>
                     </select>
                 </div>
-                Date: <input type="date" name="date"/>
+                Date:&nbsp<input type="date" name="date"/>
                 <div class="animal_filters">
                     <button type="submit" class="animal_btn">Find</button>
                 </div>
@@ -23,27 +24,39 @@
         </form>
         {{error}}
     </div>
-<table>
-    <tr><th>Start</th><th>End</th><th>Animal</th><th>Volunteer</th><th>Status</th><th></th></tr>
-{% for walk in walks %}
-    <tr>
-        <th> {{walk.starting|date:"d.m.Y H:i"}}</th>
-        <th>{{walk.ending|date:"d.m.Y H:i"}}</th>
-        <th>
-            <a href="{% url 'animal' walk.animal_id %}">{{walk.animal.name}}</a>
-        </th>
-        <th>
-            <a href="{% url 'show_user' walk.walker_id %}">{{walk.walker.username}}</a>
-        </th>
-        <th>{{walk.status}}</th>
-        <th>
-            {% if walk.status == 'confirmed' %}
-            <a href="{% url 'today_walks' %}?start=1&walk={{walk.pk}}">Start</a>
-            {% elif walk.status == 'started' %}
-            <a href="{% url 'today_walks' %}?end=1&walk={{walk.pk}}">End</a>
-            {% endif %}
-        </th>
-    </tr>
-{% endfor %}
-</table>
+    <br>
+    <table>
+        <tr>
+            <th>Start&nbsp&nbsp</th>
+            <th>End&nbsp&nbsp</th>
+            <th>Animal&nbsp&nbsp</th>
+            <th>Volunteer&nbsp&nbsp</th>
+            <th>Status</th>
+        </tr>
+    {% for walk in walks %}
+        <tr>
+            <th>{{walk.starting|date:"d.m.Y H:i"}} | </th>
+            <th>{{walk.ending|date:"d.m.Y H:i"}} | </th>
+            <th>
+                <a href="{% url 'animal' walk.animal_id %}">{{walk.animal.name}}</a>
+            </th>
+            <th>
+                |
+                {% if walk.walker.id %}
+                    <a href="{% url 'show_user' walk.walker.username %}">{{walk.walker.username}}</a>
+                {% endif %}
+            </th>
+            <th> | {{walk.status}} | </th>
+            <th>
+                {% if walk.status == 'confirmed' %}
+                    <a href="{% url 'today_walks' %}?start=1&walk={{walk.pk}}">Start</a> |
+                {% elif walk.status == 'started' %}
+                    <a href="{% url 'today_walks' %}?end=1&walk={{walk.pk}}">End</a> |
+                {% endif %}
+            </th>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+
 {% endblock %}

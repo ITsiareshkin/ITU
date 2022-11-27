@@ -1,6 +1,20 @@
 {% extends 'shelter/base.html' %}
 
 {% block content %}
-<h1>{{title}}</h1>
-<p>Содержимое страницы о сайте
-{% endblock %}
+<h2>About us</h2>
+    <p>
+    We are a small animal shelter. <br>
+    Since 2022, we have been finding a permanent and temporary home for dogs and cats. <br>
+    All animals in the shelter are sterilized and examined by a veterinarian. <br>
+    </p>
+
+    <br>
+    <p>How to help us?</p>
+    <ul>
+        <li>
+            <a href="{% url 'register' %}">Register and become a Volunteer</a> <br>
+            Even if you can’t adopt a pet just now, you can help make life better for animals by volunteering with our shelter.
+        </li>
+    </ul>
+
+{% endblock content %}
