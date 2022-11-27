@@ -1,5 +1,6 @@
 {% extends 'shelter/base.html' %}
 {% block content %}
+
 <div class="container">
     <img img class="animal-img" src="{{ animal.photo.url }}">
     <div class="animal-name">
@@ -28,14 +29,12 @@
         <a href="{% url 'manage_walks' animal.pk %}">Manage walks</a>
     {% endif %}
 
-    {% if user.position == 'vet' or 'employee' %}
+    {% if user.position == 'vet' or user.position == 'employee' %}
          <a href="{% url 'manage_tasks' animal.pk %}">Manage vet tasks</a>
     {% endif %}
     {% if user.position == "verified" %}
         <a href="{% url 'user_walks' animal.pk %}">Manage walks</a>
     {% endif %}
-
-
 </div>
 
 {% endblock content %}

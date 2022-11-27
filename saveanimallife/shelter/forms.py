@@ -36,10 +36,10 @@ GENDER_CHOICES = (
 class AddAnimalForm(forms.ModelForm):
     name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
     kind = forms.ChoiceField(required=True, choices=KIND_CHOICES)
-    breed = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
-    age = forms.IntegerField(required=True, widget=forms.TextInput(attrs={'class': 'form-input'})) # IntegerInput ?
-    color = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    age = forms.IntegerField(required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
     gender = forms.ChoiceField(required=True, choices=GENDER_CHOICES)
+    color = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    breed = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
     discription = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
     photo = forms.ImageField(required=True)
     class Meta:
@@ -48,23 +48,20 @@ class AddAnimalForm(forms.ModelForm):
 
 
 class EditAnimalForm(forms.ModelForm):
-    name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
     kind = forms.ChoiceField(required=True, choices=KIND_CHOICES)
     breed = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
-    age = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-input'}))  # IntegerInput ?
-    color = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    age = forms.IntegerField(required=True, widget=forms.TextInput(attrs={'class': 'form-input'}))
     gender = forms.ChoiceField(required=True, choices=GENDER_CHOICES)
+    color = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    breed = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
     discription = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-input'}))
-    photo = forms.ImageField()
+    photo = forms.ImageField(required=True)
 
     class Meta:
         model = Animal
         fields = ['name', 'kind', 'breed', 'age', 'color', 'gender', 'discription', 'photo']
 
-ADD_USER_CHOICES = [
-    ('vet', 'vet'),
-    ('employee', 'employee')
-]
 
 class AdminAddUserForm(UserCreationForm):
     username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-input'}))
@@ -73,7 +70,7 @@ class AdminAddUserForm(UserCreationForm):
     password2 = forms.CharField(label='Password confirm', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
     name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'class': 'form-input'}))
     surname = forms.CharField(label='Surname', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    position = forms.CharField(label='Position', widget=forms.Select(choices=ADD_USER_CHOICES))
+    position = forms.CharField(label='Position', widget=forms.Select(choices=POSITION_CHOICES))
 
     class Meta:
         model = Account
@@ -103,13 +100,12 @@ POSITION_CHOICES = [
     ('unverified', 'unverified'),
 ]
 
-####
 class EditUserForm(forms.ModelForm):
     username = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    name = forms.CharField(label='Name', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    surname = forms.CharField(label='Surname', widget=forms.TextInput(attrs={'class': 'form-input'}))
-    position = forms.CharField(label='Position', widget=forms.Select(choices=POSITION_CHOICES))
+    name = forms.CharField(label='Name', required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    surname = forms.CharField(label='Surname', required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    position = forms.CharField(label='Position', required=True, widget=forms.Select(choices=POSITION_CHOICES))
 
     class Meta:
         model = User
