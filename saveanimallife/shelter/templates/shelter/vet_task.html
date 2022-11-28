@@ -7,7 +7,7 @@
     End     : {{task.task_end|date:"d.m.Y H:i"}}<br>
     Vet     :
     {% if task.vet_id and user.position == 'employee' %}
-        <a href="{% url 'show_user' task.vet_id %}">{{task.vet.username}}</a>
+        <a href="{% url 'show_user' task.vet.username %}">{{task.vet.username}}</a>
     {% else %}
         {{task.vet.username}}
     {% endif %}
