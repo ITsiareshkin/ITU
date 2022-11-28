@@ -335,7 +335,7 @@ class ShowUsers(UserPassesTestMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         position = request.GET.get('position', '')
-        self.object_list = Account.objects.all()
+        self.object_list = Account.objects.filter(deleted=False)
         if position != '':
             self.object_list = self.object_list.filter(position=position)
         allow_empty = self.get_allow_empty()
