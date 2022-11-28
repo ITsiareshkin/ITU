@@ -1,6 +1,5 @@
 {% extends 'shelter/base.html' %}
 {% block content %}
-        {% endfor %}
     {% if user.position == "admin" %}
         <a href="adduser">Add user</a> <br><br>
     {% endif %}
@@ -31,4 +30,5 @@
             Surname  : {{account.surname}}<br>
             email    : {{account.email}}<br>
             status   : {{account.position}}<br><br>
+        {% endfor %}
 {% endblock %}
