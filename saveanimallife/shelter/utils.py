@@ -21,13 +21,11 @@ def delete_user(userid):
     acc.deleted = True
     acc.is_active = False
     if acc.position == 'vet':
-        a = Task.objects.filter(vet_id=acc.pk).filter(status__ne="ended")
+        a = Task.objects.filter(vet_id=acc.pk).exclude(status="ended")
         a.update(status="created", task_start=None, task_end=None, vet_id=None)
-        a.save()
     elif acc.position == 'verified':
-        a = Walk.objects.filter(walker_id=acc.pk).filter(status__ne="end")
+        a = Walk.objects.filter(walker_id=acc.pk).exclude(status="end")
         a.update(status="free", walker_id=None)
-        a.save()
     acc.save()
     return True
 

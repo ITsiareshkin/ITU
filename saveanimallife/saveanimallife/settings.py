@@ -80,23 +80,24 @@ WSGI_APPLICATION = 'saveanimallife.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'shelter_db',
-        'USER': 'root',
-        'PASSWORD': 'mysql_SaDima1812',
-        'HOST': 'localhost',
-        'PORT': '3306',
+if DEBUG is False:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'xsadov06$shelter',
+            'USER': 'xsadov06',
+            'PASSWORD': 'ырудеукВИзфыы',
+            'HOST': 'xsadov06.mysql.pythonanywhere-services.com',
+            'PORT': '3306',
+        }
     }
-}
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -143,6 +144,6 @@ STATICFILES_DIRS = []
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-SESSION_EXPIRE_SECONDS = 120000
+SESSION_EXPIRE_SECONDS = 600
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

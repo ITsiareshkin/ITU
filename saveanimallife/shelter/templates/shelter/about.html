@@ -12,7 +12,11 @@
     <p>How to help us?</p>
     <ul>
         <li>
+            {% if user.is_anonymous %}
             <a href="{% url 'register' %}">Register and become a Volunteer</a> <br>
+            {% else %}
+            Register and become a Volunteer<br>
+            {% endif %}
             Even if you can’t adopt a pet just now, you can help make life better for animals by volunteering with our shelter.
         </li>
     </ul>

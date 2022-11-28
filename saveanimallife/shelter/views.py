@@ -127,7 +127,7 @@ class EditAnimal(DataMixin, UserPassesTestMixin, UpdateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Animal profile")
+        c_def = self.get_user_context(title="Edit animal")
         return dict(list(context.items()) + list(c_def.items()))
 
     def test_func(self):
@@ -239,7 +239,7 @@ class EditProfile(DataMixin, generic.UpdateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="My profile")
+        c_def = self.get_user_context(title="Edit profile")
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_success_url(self):
@@ -481,7 +481,7 @@ class UserWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMi
 
     def get_queryset(self):
         queryset = Walk.objects.filter(animal_id=self.kwargs['animalid']).filter(
-            starting__gte=date.today()).select_related('walker')
+            starting__gte=date.today()).select_related('walker').filter(Q(walker_id=None) | Q(walker_id=self.request.user.pk))
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -614,7 +614,7 @@ class EditHealth(DataMixin, UserPassesTestMixin, UpdateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Walks")
+        c_def = self.get_user_context(title="Health")
         return dict(list(context.items()) + list(c_def.items()))
 
     def test_func(self):
@@ -803,14 +803,14 @@ class NewTasks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMix
     template_name = 'shelter/task_list.html'
     context_object_name = 'tasks'
     paginate_by = 7
-
+    title = "New Tasks"
     def get_queryset(self):
         queryset = Task.objects.filter(status='created')
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Walks")
+        c_def = self.get_user_context(title=self.title)
         return dict(list(context.items()) + list(c_def.items()))
 
     def test_func(self):
@@ -820,6 +820,7 @@ class NewTasks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMix
 
 
 class MyTasks(NewTasks):
+    title = "My Tasks"
     def get_queryset(self):
         queryset = Task.objects.filter(vet_id=self.request.user.pk)
         return queryset
