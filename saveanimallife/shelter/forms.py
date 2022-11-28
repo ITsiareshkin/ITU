@@ -81,7 +81,8 @@ class AdminAddUserForm(UserCreationForm):
     password2 = forms.CharField(label='Password confirm', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
     name = forms.CharField(label='Name', required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
     surname = forms.CharField(label='Surname', required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
-
+    position = forms.CharField(label='Position', required=True, widget=forms.Select(choices=POSITION_CHOICES))
+    
     class Meta:
         model = Account
         fields = ('username', 'email', 'password1', 'password2', 'name', 'surname', 'position')
