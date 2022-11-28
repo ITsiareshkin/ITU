@@ -136,7 +136,7 @@ class EditAnimal(DataMixin, UserPassesTestMixin, UpdateView):
         return False
 
     def get_success_url(self):
-        return reverse_lazy('animals')
+        return reverse_lazy('animals', args = [self.kwargs['animalid']])
 
 
 class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
@@ -637,7 +637,7 @@ class EditHealth(DataMixin, UserPassesTestMixin, UpdateView):
         return False
 
     def get_success_url(self):
-        return reverse_lazy('animals')
+        return reverse_lazy('animals', args = [self.kwargs['animalid']])
 
 
 
