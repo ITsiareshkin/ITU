@@ -296,7 +296,7 @@ class UserEdit(DataMixin, UserPassesTestMixin, generic.UpdateView):
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_success_url(self):
-        return reverse_lazy('user_edit', args = [self.kwargs['username']])
+        return reverse_lazy('show_user', args = [self.kwargs['username']])
 
     def test_func(self):
         if self.request.user.position == "admin":
