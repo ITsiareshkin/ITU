@@ -30,7 +30,7 @@
         <th>
             {% if task.vet_id%}
                 {% if user.position == 'employee' %}
-                    <a href="{% url 'show_user' task.vet_id %}">{{task.vet.username}}</a>
+                    <a href="{% url 'show_user' task.vet.username %}">{{task.vet.username}}</a>
                 {% else %}
                     {{task.vet.username}}
                 {% endif %}
