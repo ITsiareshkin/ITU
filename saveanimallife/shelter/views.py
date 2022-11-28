@@ -333,6 +333,25 @@ class ShowUsers(UserPassesTestMixin, ListView):
     slug_field = 'username'
     slug_url_kwarg = 'username'
 
+    def get(self, request, *args, **kwargs):
+        position = request.GET.get('position', '')
+        self.object_list = Account.objects.all()
+        if position != '':
+            self.object_list = self.object_list.filter(position=position)
+        allow_empty = self.get_allow_empty()
+
+        if not allow_empty:
+            if self.get_paginate_by(self.object_list) is not None and hasattr(
+                    self.object_list, "exists"
+            ):
+                is_empty = not self.object_list.exists()
+            else:
+                is_empty = not self.object_list
+            if is_empty:
+                raise Http404("Empty list and “%(class_name)s.allow_empty” is False.")
+        context = self.get_context_data()
+        return self.render_to_response(context)
+
     def test_func(self):
         if self.request.user.position == "employee" or self.request.user.position == "admin":
             return True
@@ -589,10 +608,6 @@ class TodayWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseM
                 raise Http404("Empty list and “%(class_name)s.allow_empty” is False.")
         context = self.get_context_data()
         return self.render_to_response(context)
-
-    def get_queryset(self):
-        queryset = Walk.objects.all()#.filter(starting__gte=filter_date)
-        return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
