@@ -49,9 +49,9 @@
             <th> | {{walk.status}} | </th>
             <th>
                 {% if walk.status == 'confirmed' %}
-                    <a href="{% url 'today_walks' %}?start=1&walk={{walk.pk}}">Start</a> |
+                    <a href="{% url 'today_walks' %}?start=1&walk={{walk.pk}}&status={{request.GET.status}}&date={{request.GET.date}}">Start</a> |
                 {% elif walk.status == 'started' %}
-                    <a href="{% url 'today_walks' %}?end=1&walk={{walk.pk}}">End</a> |
+                    <a href="{% url 'today_walks' %}?end=1&walk={{walk.pk}}&status={{request.GET.status}}&date={{request.GET.date}}">End</a> |
                 {% endif %}
             </th>
         </tr>
