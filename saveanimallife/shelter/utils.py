@@ -38,7 +38,6 @@ def unverify_user(userid):
         if acc.position == 'verified':
             acc.position = 'unverified'
             acc.save()
-            print("verif")
             a = Walk.objects.filter(walker_id=acc.pk).exclude(status="end")
             a.update(status="free", walker_id=None)
         return True

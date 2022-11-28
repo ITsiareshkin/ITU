@@ -591,7 +591,6 @@ class TodayWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseM
         if filter_date != '':
             filter_date = datetime.strptime(filter_date, "%Y-%m-%d")
             self.object_list = self.object_list.filter(Q(starting__gte=filter_date) & Q(starting__lte=(filter_date + timedelta(days=1))))
-            print(filter_date + timedelta(days=1))
         if filter_status != 'all':
             self.object_list = self.object_list.filter(status=filter_status)
 
