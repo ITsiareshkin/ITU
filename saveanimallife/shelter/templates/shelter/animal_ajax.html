@@ -1,0 +1,156 @@
+{% extends 'shelter/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div id="filters">
+        <h3>Find your best friend</h3>
+        <form id="filter">
+            <div class="row">
+                <div class="animal_filters">
+                    <select class="form-control" name="kind" id="kind">
+                        <option value="" selected="selected">Kind</option>
+                        <option value="cat">Cat</option>
+                        <option value="dog">Dog</option>
+                    </select>
+                </div>
+                <div class="animal_filters">
+                    <select class="form-control" name="gender">
+                        <option value="" selected="selected">Genger</option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                    </select>
+                </div>
+                <div class="animal_filters">
+                    <select class="form-control" name="age">
+                        <option value="" selected="selected">Age</option>
+                        <option value="baby"><1</option>
+                        <option value="teen">1-5</option>
+                        <option value="adult">>5</option>
+                    </select>
+                </div>
+                <div class="animal_filters">
+                    <button type="submit" class="animal_btn">Find</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <br>
+
+    <div class="row", id="animal_list">
+    </div>
+    <nav class="list-pages" id="pagelist">
+    </nav>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+<script>
+    function page_change(id){
+        var serializedData = $("#filter").serialize();
+        let url_a = "{% url 'animals' %}?page="+id.toString();
+        $.ajax({
+            type: 'GET',
+            url: url_a,
+            data: serializedData,
+            success: function (response) {
+                document.getElementById("animal_list").innerHTML = "";
+                var theDiv = document.getElementById("animal_list");
+                var animals = JSON.parse(response["animal"]);
+                for (let i = 0; i < animals.length; i++) {
+                   var fields = animals[i]["fields"];
+                   var animal_item = "<div class=\"animal-item\"><a href=\""+""+ animals[i]["pk"] +"/\"><div class=\"animal-image-list\"><img src=\"/media/"+fields["photo"]+"\" alt=\"\"></div><div class=\"animal-description-\"><div class=\"animal-name-list \">"+fields["name"]+"</div><div class=\"animal-info-list\">"+fields["gender"]+" / "+fields["age"]+" y.o</div></div></a></div>"
+                   theDiv.innerHTML += animal_item;
+                }
+                var pages = JSON.parse(response["pages"]);
+                var page_n = document.getElementById("pagelist");
+                document.getElementById("pagelist").innerHTML = "";
+                for(let i=1; i <= Number(pages[0]["pages"]); i++)
+                {
+                    var page_item;
+                    if (i!=pages[1]["page"]) {
+                        page_item = "<input type=\"button\" onclick=\"page_change("+ i.toString() +")\" value=\"" + i.toString() + "\" class=\"page-num\"/>";
+                    } else {
+                        page_item = "<input type=\"button\" onclick=\"page_change("+ i.toString() +")\" value=\"" + i.toString() + "\" class=\"page-num-selected\"/>";
+                    }
+                    page_n.innerHTML += page_item;
+                }
+            },
+            error: function (response) {
+                // alert the error if any error occured
+                alert(response["responseJSON"]["error"]);
+            }
+        })
+    }
+    $(document).ready(function () {
+        $("#filter").submit(function (e) {
+            e.preventDefault();
+            var serializedData = $(this).serialize();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'animals' %}",
+                data: serializedData,
+                success: function (response) {
+                    document.getElementById("animal_list").innerHTML = "";
+                    var theDiv = document.getElementById("animal_list");
+                    var animals = JSON.parse(response["animal"]);
+                    for (let i = 0; i < animals.length; i++) {
+                       var fields = animals[i]["fields"];
+                       var animal_item = "<div class=\"animal-item\"><a href=\""+""+ animals[i]["pk"] +"/\"><div class=\"animal-image-list\"><img src=\"/media/"+fields["photo"]+"\" alt=\"\"></div><div class=\"animal-description-\"><div class=\"animal-name-list \">"+fields["name"]+"</div><div class=\"animal-info-list\">"+fields["gender"]+" / "+fields["age"]+" y.o</div></div></a></div>"
+                       theDiv.innerHTML += animal_item;
+                    }
+                    var pages = JSON.parse(response["pages"]);
+                    var page_n = document.getElementById("pagelist");
+                    document.getElementById("pagelist").innerHTML = "";
+                    for(let i=1; i <= Number(pages[0]["pages"]); i++)
+                    {
+                        var page_item;
+                        if (i!=pages[1]["page"]) {
+                            page_item = "<input type=\"button\" onclick=\"page_change("+ i.toString() +")\" value=\"" + i.toString() + "\" class=\"page-num\"/>";
+                        } else {
+                            page_item = "<input type=\"button\" onclick=\"page_change("+ i.toString() +")\" value=\"" + i.toString() + "\" class=\"page-num-selected\"/>";
+                        }
+                        page_n.innerHTML += page_item;
+                    }
+                },
+                error: function (response) {
+                    // alert the error if any error occured
+                    alert(response["responseJSON"]["error"]);
+                }
+            })
+        })
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'animals' %}",
+            data: "page=1",
+            success: function (response) {
+                var theDiv = document.getElementById("animal_list");
+                var animals = JSON.parse(response["animal"]);
+                for (let i = 0; i < animals.length; i++) {
+                   var fields = animals[i]["fields"];
+                   var animal_item = "<div class=\"animal-item\"><a href=\""+""+ animals[i]["pk"] +"/\"><div class=\"animal-image-list\"><img src=\"/media/"+fields["photo"]+"\" alt=\"\"></div><div class=\"animal-description-\"><div class=\"animal-name-list \">"+fields["name"]+"</div><div class=\"animal-info-list\">"+fields["gender"]+" / "+fields["age"]+" y.o</div></div></a></div>"
+                   theDiv.innerHTML += animal_item;
+                }
+                var pages = JSON.parse(response["pages"]);
+                var page_n = document.getElementById("pagelist");
+                document.getElementById("pagelist").innerHTML = "";
+                for(let i=1; i <= Number(pages[0]["pages"]); i++)
+                {
+                    var page_item;
+                    if (i!=pages[1]["page"]) {
+                        page_item = "<input type=\"button\" onclick=\"page_change("+ i.toString() +")\" value=\"" + i.toString() + "\" class=\"page-num\"/>";
+                    } else {
+                        page_item = "<input type=\"button\" onclick=\"page_change("+ i.toString() +")\" value=\"" + i.toString() + "\" class=\"page-num-selected\"/>";
+                    }
+                    page_n.innerHTML += page_item;
+                }
+            },
+            error: function (response) {
+                alert(response["responseJSON"]["error"]);
+            }
+        })
+
+    })
+</script>
+{% endblock javascript %}

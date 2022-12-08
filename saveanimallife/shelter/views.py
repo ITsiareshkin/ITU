@@ -5,19 +5,18 @@ from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView, PasswordChangeView
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import *
 from django.views.generic.list import BaseListView
-from django.db.models import Q
-from django.db import connection
+from django.core import serializers
 
 from datetime import date, datetime, timedelta
-from django.views.generic.edit import BaseCreateView
 from django.views.generic.base import TemplateResponseMixin
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .forms import *
 from .utils import *
@@ -73,8 +72,7 @@ class AnimalList(DataMixin, ListView):
                 self.object_list = self.object_list.filter(age__gt='1', age__lt='5')
             elif f_age == 'adult':
                 self.object_list = self.object_list.filter(age__gte='5')
-
-
+        print(self.object_list)
         context = self.get_context_data(object_list=self.object_list)
         return self.render_to_response(context)
 
@@ -118,6 +116,7 @@ class AnimalDelete(View):
         animal.delete()
         return redirect(reverse('animals'))
 
+
 @method_decorator(login_required, name='dispatch')
 class EditAnimal(DataMixin, UserPassesTestMixin, UpdateView):
     model = Animal
@@ -136,7 +135,7 @@ class EditAnimal(DataMixin, UserPassesTestMixin, UpdateView):
         return False
 
     def get_success_url(self):
-        return reverse_lazy('animal', args = [self.kwargs['animalid']])
+        return reverse_lazy('animals')
 
 
 class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
@@ -153,6 +152,7 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Add animal")
         return dict(list(context.items()) + list(c_def.items()))
+
 
 def about_us(request):
     context = {
@@ -174,6 +174,7 @@ class Register(DataMixin, UserPassesTestMixin, CreateView):
 
     def test_func(self):
         return self.request.user.is_anonymous
+
 
 class Login(DataMixin, LoginView):
     form_class = AuthenticationForm
@@ -296,7 +297,7 @@ class UserEdit(DataMixin, UserPassesTestMixin, generic.UpdateView):
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_success_url(self):
-        return reverse_lazy('show_user', args = [self.kwargs['username']])
+        return reverse_lazy('user_edit', args=[self.kwargs['username']])
 
     def test_func(self):
         if self.request.user.position == "admin":
@@ -335,7 +336,7 @@ class ShowUsers(UserPassesTestMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         position = request.GET.get('position', '')
-        self.object_list = Account.objects.filter(deleted=False)
+        self.object_list = Account.objects.all()
         if position != '':
             self.object_list = self.object_list.filter(position=position)
         allow_empty = self.get_allow_empty()
@@ -359,7 +360,7 @@ class ShowUsers(UserPassesTestMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = "Users"
+        context['title'] = "User page"
         context['menu'] = menu
         return context
 
@@ -500,7 +501,8 @@ class UserWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMi
 
     def get_queryset(self):
         queryset = Walk.objects.filter(animal_id=self.kwargs['animalid']).filter(
-            starting__gte=date.today()).select_related('walker').filter(Q(walker_id=None) | Q(walker_id=self.request.user.pk))
+            starting__gte=date.today()).select_related('walker').filter(
+            Q(walker_id=None) | Q(walker_id=self.request.user.pk))
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -590,8 +592,9 @@ class TodayWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseM
 
         if filter_date != '':
             filter_date = datetime.strptime(filter_date, "%Y-%m-%d")
-            self.object_list = self.object_list.filter(Q(starting__gte=filter_date) & Q(starting__lte=(filter_date + timedelta(days=1))))
-        if not(filter_status == 'all' or filter_status == ''):
+            self.object_list = self.object_list.filter(
+                Q(starting__gte=filter_date) & Q(starting__lte=(filter_date + timedelta(days=1))))
+        if not (filter_status == 'all' or filter_status == ''):
             self.object_list = self.object_list.filter(status=filter_status)
 
         allow_empty = self.get_allow_empty()
@@ -637,9 +640,7 @@ class EditHealth(DataMixin, UserPassesTestMixin, UpdateView):
         return False
 
     def get_success_url(self):
-        return reverse_lazy('animal', args = [self.kwargs['animalid']])
-
-
+        return reverse_lazy('animals')
 
 
 class ManageTasksForVet(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMixin):
@@ -818,6 +819,7 @@ class NewTasks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMix
     context_object_name = 'tasks'
     paginate_by = 7
     title = "New Tasks"
+
     def get_queryset(self):
         queryset = Task.objects.filter(status='created')
         return queryset
@@ -835,6 +837,61 @@ class NewTasks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseMix
 
 class MyTasks(NewTasks):
     title = "My Tasks"
+
     def get_queryset(self):
         queryset = Task.objects.filter(vet_id=self.request.user.pk)
         return queryset
+
+
+class Animals_Ajax(DataMixin, View):
+    model = Animal
+    template_name = 'shelter/animal_ajax.html'
+    object_list=[]
+
+    def get(self, request, *args, **kwargs):
+        f_kind = request.GET.get('kind', '')
+        f_gender = request.GET.get('gender', '')
+        f_age = request.GET.get('age', '')
+        self.object_list = Animal.objects.all()
+        if f_kind != '':
+            if f_kind == 'cat':
+                self.object_list = self.object_list.filter(kind='Cat')
+            elif f_kind == 'dog':
+                self.object_list = self.object_list.filter(kind='Dog')
+
+        if f_gender != '':
+            if f_gender == 'female':
+                self.object_list = self.object_list.filter(gender='Female')
+            elif f_gender == 'male':
+                self.object_list = self.object_list.filter(gender='Male')
+
+        if f_age != '':
+            if f_age == 'baby':
+                self.object_list = self.object_list.filter(age__lte='1')
+            elif f_age == 'teen':
+                self.object_list = self.object_list.filter(age__gt='1', age__lt='5')
+            elif f_age == 'adult':
+                self.object_list = self.object_list.filter(age__gte='5')
+
+        paginator = Paginator(self.object_list, 3)
+        page = request.GET.get('page', 1)
+        try:
+            blogs = paginator.page(page)
+        except PageNotAnInteger:
+            blogs = paginator.page(1)
+        except EmptyPage:
+            blogs = paginator.page(paginator.num_pages)
+        self.object_list = blogs
+        page_list = blogs.paginator.page_range
+        context = self.get_context_data(animal=self.object_list)
+        if not is_ajax(self.request):
+            return render(request, self.template_name, context)
+        else:
+            serialized = serializers.serialize('json', list(self.object_list))
+            pages = '[{"pages": "' + str(page_list[-1]) + '"}, {"page":"'+ str(page) +'"}]'
+            return JsonResponse({"animal": serialized, "pages": pages}, status=200)
+
+
+    def get_context_data(self, animal):
+        context = {'title': "Animals", 'menu': menu, 'animal': animal}
+        return context

@@ -5,7 +5,7 @@ urlpatterns = [
     path('', ShelterHome.as_view(), name='home'),
     path('mypage/', UserProfileWalks.as_view(), name='mypage'),
 
-    path('animals/', AnimalList.as_view(), name='animals'),
+    path('animals/', Animals_Ajax.as_view(), name='animals'),
     path('animals/<int:animalid>/', AnimalProfile.as_view(), name='animal'),
     path('animals/addanimal', ShowAddAnimal.as_view(), name='addanimal'),
     path('animals/edit/<int:animalid>', EditAnimal.as_view(), name='edit_animal'),
@@ -33,4 +33,6 @@ urlpatterns = [
     path('my_tasks/', MyTasks.as_view(), name="my_tasks"),
 
     path('accounts/login/', Login.as_view(), name='login_logout'),
+
+    path('animals_a/', Animals_Ajax.as_view(), name='animals_a'),
 ]

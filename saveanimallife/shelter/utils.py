@@ -29,6 +29,7 @@ def delete_user(userid):
     acc.save()
     return True
 
+
 def unverify_user(userid):
     try:
         acc = Account.objects.get(pk=userid)
@@ -41,3 +42,7 @@ def unverify_user(userid):
             a = Walk.objects.filter(walker_id=acc.pk).exclude(status="end")
             a.update(status="free", walker_id=None)
         return True
+
+
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
