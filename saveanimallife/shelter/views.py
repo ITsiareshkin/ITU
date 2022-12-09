@@ -53,6 +53,7 @@ class AnimalProfile(DataMixin, DetailView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class AnimalDelete(View):
     def get(self, request, *args, **kwargs):
         animal = Animal.objects.get(pk=self.kwargs['animalid'])
@@ -85,6 +86,7 @@ class EditAnimal(DataMixin, UserPassesTestMixin, UpdateView):
         return reverse_lazy('animals')
 
 
+@method_decorator(login_required, name='dispatch')
 class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
     form_class = AddAnimalForm
     template_name = 'shelter/addanimal.html'
