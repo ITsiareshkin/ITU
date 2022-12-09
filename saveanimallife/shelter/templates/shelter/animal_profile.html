@@ -26,26 +26,12 @@
 
     <br>
     <br>
-
-    <p>My health:</p>
-    <div class="animal-spec">{{ animal.health }}</div>
-
-    <br>
-    <br>
     <br>
 
     {% if user.position == "employee" %}
         <a href="{% url 'edit_animal' animal.pk %}">Edit animal profile</a> |
         <a href="{% url 'manage_walks' animal.pk %}">Manage walks</a> |
-        <a href="{% url 'manage_tasks' animal.pk %}">Manage vet tasks</a> |
         <a href="{% url 'animal_delete' animal.pk %}">Delete animal profile</a>
-    {% endif %}
-
-    {% if user.position == 'vet' %}
-        <a href="{% url 'edit_health' animal.pk %}">Edit animal health</a> |
-        <a href="{% url 'manage_tasks' animal.pk %}">Manage vet tasks</a>
-    {% endif %}
-    {% if user.position == 'vet' %}
     {% endif %}
 
     {% if user.position == "verified" %}

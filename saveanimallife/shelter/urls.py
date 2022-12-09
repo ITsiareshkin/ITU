@@ -9,7 +9,6 @@ urlpatterns = [
     path('animals/<int:animalid>/', AnimalProfile.as_view(), name='animal'),
     path('animals/addanimal', ShowAddAnimal.as_view(), name='addanimal'),
     path('animals/edit/<int:animalid>', EditAnimal.as_view(), name='edit_animal'),
-    path('animals/edit_health/<int:animalid>/', EditHealth.as_view(), name='edit_health'),
     path('animals/<int:animalid>/delete', AnimalDelete.as_view(), name='animal_delete'),
 
     path('about_us/', about_us, name='about_us'),
@@ -27,12 +26,5 @@ urlpatterns = [
     path('user_walks/<int:animalid>/', UserWalks.as_view(), name="user_walks"),
     path('today_walks/', TodayWalks.as_view(), name="today_walks"),
 
-    path('manage_tasks/<int:animalid>/', ManageTasksForVet.as_view(), name="manage_tasks"),
-    path('task/<int:taskid>/', ShowTask.as_view(), name="task"),
-    path('new_tasks/', NewTasks.as_view(), name="new_tasks"),
-    path('my_tasks/', MyTasks.as_view(), name="my_tasks"),
-
     path('accounts/login/', Login.as_view(), name='login_logout'),
-
-    path('animals_a/', Animals_Ajax.as_view(), name='animals_a'),
 ]
