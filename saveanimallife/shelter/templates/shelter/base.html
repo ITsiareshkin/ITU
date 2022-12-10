@@ -29,7 +29,7 @@
                                     <li><a href="{% url 'users' %}">Users</a></li>
                                 {% endif %}
                                 {% if user.position == "employee" %}
-                                    <li><a href="{% url 'addanimal' %}">Add animal</a></li>
+                                    <li><a href="{% url 'addanimal' %}" class='popup-link'>Add animal</a></li>
                                     <li><a href="{% url 'today_walks' %}">Walks</a></li>
                                 {% endif %}
                                 {% if request.user.is_authenticated %}
@@ -81,6 +81,11 @@
         </tr>
         <!-- End footer -->
     </table>
+    <div id="/addanimal" class="popup">
+        {% block popupform %}
+        {% endblock popupform %}
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     {% block javascript %}

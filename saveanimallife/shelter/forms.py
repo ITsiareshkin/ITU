@@ -43,6 +43,11 @@ class AddAnimalForm(forms.ModelForm):
     breed = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
     discription = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-input'}))
     photo = forms.ImageField(required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        return cleaned_data
+
     class Meta:
         model = Animal
         fields = ['name', 'kind', 'breed', 'age', 'color', 'gender', 'discription', 'photo']

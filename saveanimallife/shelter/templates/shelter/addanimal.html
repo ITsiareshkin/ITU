@@ -1,16 +1,21 @@
 {% extends 'shelter/base.html' %}
-{% block content %}
-    <h2>Add animal</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% for f in form %}
-            <p>
-                <label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}
-            </p>
-            <div class="form-error">
-                {{ f.errors }}
+{% load static %}
+{% block popupform %}
+    <div class="popup__body">
+        <div class="popup__content">
+           <a href="" class="popup__close close-popup">X</a>
+            <div class="popup__title">Add animal</div>
+            <div class="popup__text">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for f in form %}
+                        <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+                        <div class="form-error">{{ f.errors }}</div>
+                    {% endfor %}
+                    <button type="submit">Add</button>
+                </form>
             </div>
-        {% endfor %}
-        <button type="submit">Add</button>
-    </form>
-{% endblock content %}
+        </div>
+    </div>
+    <script src="{% static 'shelter/js/popups.js' %}"></script>
+{% endblock popupform %}

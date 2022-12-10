@@ -92,6 +92,26 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
     template_name = 'shelter/addanimal.html'
     success_url = reverse_lazy('animals')
 
+    # def post(self, request, *args, **kwargs):
+    #     if not is_ajax(self.request):
+    #         return redirect(request.POST.get('addanimal'))
+    #     else:
+    #         form_class = AddAnimalForm
+    #         if form_class.is_valid():
+    #             data = {
+    #                 'name': form_class.cleaned_data['name'],
+    #                 'kind': form_class.claeaned_data['kind'],
+    #                 'age': form_class.claeaned_data['age'],
+    #                 'gender': form_class.claeaned_data['gender'],
+    #                 'color': form_class.claeaned_data['color'],
+    #                 'breed': form_class.claeaned_data['breed'],
+    #                 'discription': form_class.claeaned_data['discription'],
+    #                 'photo': form_class.cleaned_data['photo'],
+    #             }
+    #             return JsonResponse({'success': data})
+    #         else:
+    #             return JsonResponse({'errors': form_class.errors})
+
     def test_func(self):
         if self.request.user.position == "employee":
             return True
