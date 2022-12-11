@@ -98,7 +98,7 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
         if not is_ajax(self.request):
             return redirect(reverse_lazy('animals'))
         else:
-            if not request.POST['name'].isdecimal():
+            if not request.POST['age'].isdecimal():
                 return JsonResponse({'error': 'Age must be decimal'}, status=409)
             add_a = Animal(name=self.request.POST['name'], kind=self.request.POST['kind'],
                            age=self.request.POST['age'], gender=self.request.POST['gender'],

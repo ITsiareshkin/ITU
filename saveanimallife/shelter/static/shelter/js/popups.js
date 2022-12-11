@@ -111,6 +111,8 @@ $("#animal_form").submit(function (e) {
         processData: false,
         contentType: false,
         success: function (response) {
+            const popupActive = document.querySelector('.popup.open');
+            popupClose(popupActive, true);
             window.alert("Animal added");
         },
         error: function (response) {
