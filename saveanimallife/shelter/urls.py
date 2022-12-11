@@ -7,7 +7,7 @@ urlpatterns = [
 
     path('animals/', Animals_Ajax.as_view(), name='animals'),
     path('animals/<int:animalid>/', AnimalProfile.as_view(), name='animal'),
-    path('addanimal', ShowAddAnimal.as_view(), name='addanimal'),
+    path('addanimal/', ShowAddAnimal.as_view(), name='addanimal'),
     path('animals/edit/<int:animalid>', EditAnimal.as_view(), name='edit_animal'),
     path('animals/<int:animalid>/delete', AnimalDelete.as_view(), name='animal_delete'),
 

@@ -96,3 +96,26 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+$("#animal_form").submit(function (e) {
+    e.preventDefault();
+    //var serializedData = $("#animal_form").serialize();
+    var frm = $('#animal_form');
+    var formData = new FormData(frm[0]);
+    //var files = $('#id_photo')[0].files;
+    //formData.append('photo', files);
+    let url_a = "/addanimal/";
+    $.ajax({
+        type: 'POST',
+        url: url_a,
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            window.alert("Animal added");
+        },
+        error: function (response) {
+            alert(response["responseJSON"]["error"]);
+        }
+    })
+})
+

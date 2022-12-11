@@ -91,26 +91,21 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
     form_class = AddAnimalForm
     template_name = 'shelter/addanimal.html'
     success_url = reverse_lazy('animals')
-
-    # def post(self, request, *args, **kwargs):
-    #     if not is_ajax(self.request):
-    #         return redirect(request.POST.get('addanimal'))
-    #     else:
-    #         form_class = AddAnimalForm
-    #         if form_class.is_valid():
-    #             data = {
-    #                 'name': form_class.cleaned_data['name'],
-    #                 'kind': form_class.claeaned_data['kind'],
-    #                 'age': form_class.claeaned_data['age'],
-    #                 'gender': form_class.claeaned_data['gender'],
-    #                 'color': form_class.claeaned_data['color'],
-    #                 'breed': form_class.claeaned_data['breed'],
-    #                 'discription': form_class.claeaned_data['discription'],
-    #                 'photo': form_class.cleaned_data['photo'],
-    #             }
-    #             return JsonResponse({'success': data})
-    #         else:
-    #             return JsonResponse({'errors': form_class.errors})
+    def get(self, request, *args, **kwargs):
+        if not is_ajax(self.request):
+            return redirect(reverse_lazy('animals'))
+    def post(self, request, *args, **kwargs):
+        if not is_ajax(self.request):
+            return redirect(reverse_lazy('animals'))
+        else:
+            if not request.POST['name'].isdecimal():
+                return JsonResponse({'error': 'Age must be decimal'}, status=409)
+            add_a = Animal(name=self.request.POST['name'], kind=self.request.POST['kind'],
+                           age=self.request.POST['age'], gender=self.request.POST['gender'],
+                           color=self.request.POST['color'], breed=self.request.POST['breed'],
+                           photo=self.request.FILES['photo'], discription=self.request.POST['discription'])
+            add_a.save()
+            return JsonResponse({}, status=200)
 
     def test_func(self):
         if self.request.user.position == "employee":
@@ -594,7 +589,7 @@ class TodayWalks(DataMixin, UserPassesTestMixin, BaseListView, TemplateResponseM
 class Animals_Ajax(DataMixin, View):
     model = Animal
     template_name = 'shelter/animal_ajax.html'
-    object_list=[]
+    object_list = []
 
     def get(self, request, *args, **kwargs):
         f_kind = request.GET.get('kind', '')
@@ -636,9 +631,8 @@ class Animals_Ajax(DataMixin, View):
             return render(request, self.template_name, context)
         else:
             serialized = serializers.serialize('json', list(self.object_list))
-            pages = '[{"pages": "' + str(page_list[-1]) + '"}, {"page":"'+ str(page) +'"}]'
+            pages = '[{"pages": "' + str(page_list[-1]) + '"}, {"page":"' + str(page) + '"}]'
             return JsonResponse({"animal": serialized, "pages": pages}, status=200)
-
 
     def get_context_data(self, animal):
         context = {'title': "Animals", 'menu': menu, 'animal': animal}
