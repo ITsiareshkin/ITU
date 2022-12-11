@@ -98,11 +98,8 @@ document.addEventListener('keydown', function (e) {
 
 $("#animal_form").submit(function (e) {
     e.preventDefault();
-    //var serializedData = $("#animal_form").serialize();
     var frm = $('#animal_form');
     var formData = new FormData(frm[0]);
-    //var files = $('#id_photo')[0].files;
-    //formData.append('photo', files);
     let url_a = "/addanimal/";
     $.ajax({
         type: 'POST',
@@ -114,6 +111,10 @@ $("#animal_form").submit(function (e) {
             const popupActive = document.querySelector('.popup.open');
             popupClose(popupActive, true);
             window.alert("Animal added");
+            let addr = window.location.toString();
+            if (addr.indexOf('/animals/') != -1){
+                page_change(1);
+            }
         },
         error: function (response) {
             alert(response["responseJSON"]["error"]);
