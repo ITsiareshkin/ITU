@@ -1,6 +1,23 @@
-const popupLinks = document.querySelectorAll('.popup-link');
-const body = document.querySelector('body');
-const lockPadding = document.querySelectorAll('.lock-padding');
+var popupLinks = document.querySelectorAll('.popup-link');
+var body = document.querySelector('body');
+var lockPadding = document.querySelectorAll('.lock-padding');
+
+function update_values(){
+    popupLinks = document.querySelectorAll('.popup-link');
+    body = document.querySelector('body');
+    lockPadding = document.querySelectorAll('.lock-padding');
+    if (popupLinks.length > 0) {
+    for (let index = 0; index < popupLinks.length; index++) {
+        const popupLink = popupLinks[index];
+        popupLink.addEventListener("click", function (e) {
+            const popupName = popupLink.getAttribute('href');
+            const currentPopup = document.getElementById(popupName);
+            popupOpen(currentPopup);
+            e.preventDefault();
+        });
+    }
+}
+}
 
 let unlock = true;
 
@@ -115,6 +132,7 @@ $("#animal_form").submit(function (e) {
             if (addr.indexOf('/animals/') != -1){
                 page_change(1);
             }
+            document.getElementById("animal_form").reset();
         },
         error: function (response) {
             alert(response["responseJSON"]["error"]);

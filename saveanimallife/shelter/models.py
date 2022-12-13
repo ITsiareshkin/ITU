@@ -36,7 +36,6 @@ class MyAccountManager(BaseUserManager):
 
 
 class Account(AbstractBaseUser):
-
     # Required
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
     username = models.CharField(max_length=30, unique=True)
@@ -120,6 +119,33 @@ class Task(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    class Meta:
+        ordering = ('-created',)
+
+
+class Fundraising(models.Model):
+    amount = models.FloatField(null=False, blank=False)
+    current_amount = models.FloatField(null=False, blank=False, default=0)
+    description = models.CharField(max_length=100, null=False, blank=False)
+    created = models.DateTimeField(auto_now_add=True)
+    end = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.description)
+
+    class Meta:
+        ordering = ('-created',)
+
+
+class Donation(models.Model):
+    fundraising = models.ForeignKey(Fundraising, on_delete=models.CASCADE, null=False, blank=False)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=False, blank=False)
+    amount = models.FloatField(null=False, blank=False)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.created)
 
     class Meta:
         ordering = ('-created',)

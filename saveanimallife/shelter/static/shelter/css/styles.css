@@ -350,3 +350,33 @@ div.animal_filters {
 .popup__text {
 
 }
+
+
+.progress-bar {
+  height: 20px;
+  background: #1da1f2;
+  box-shadow: 2px 14px 15px -7px rgba(30, 166, 250, 0.36);
+  border-radius: 50px;
+  width: 10%;
+}
+.progress-back {
+  height: 20px;
+  background: #E2E2E2;
+  box-shadow: 2px 14px 15px -7px rgba(30, 166, 250, 0.36);
+  border-radius: 50px;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.progress {
+  width: 40%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: start;
+  padding: 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0px 10px 50px #abb7e9;
+  margin-bottom: 1rem;
+}

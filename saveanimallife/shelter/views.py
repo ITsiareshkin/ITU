@@ -91,9 +91,11 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
     form_class = AddAnimalForm
     template_name = 'shelter/addanimal.html'
     success_url = reverse_lazy('animals')
+
     def get(self, request, *args, **kwargs):
         if not is_ajax(self.request):
             return redirect(reverse_lazy('animals'))
+
     def post(self, request, *args, **kwargs):
         if not is_ajax(self.request):
             return redirect(reverse_lazy('animals'))
@@ -637,3 +639,59 @@ class Animals_Ajax(DataMixin, View):
     def get_context_data(self, animal):
         context = {'title': "Animals", 'menu': menu, 'animal': animal}
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+class Donations_View(DataMixin, View):
+    template_name = 'shelter/donations.html'
+
+    def get(self, request, *args, **kwargs):
+        if not is_ajax(self.request):
+            context = self.get_context_data()
+            return render(request, self.template_name, context)
+        sort = request.GET.get('kind', '')
+        object_list = Fundraising.objects.all()
+        if sort == 'not_ended':
+            object_list = object_list.filter(end=False)
+        elif sort == "ended":
+            object_list = object_list.filter(end=True)
+        serialized = serializers.serialize('json', list(object_list))
+        return JsonResponse({"donation": serialized}, status=200)
+
+    def get_context_data(self):
+        context = {'title': "Donations", 'menu': menu}
+        return context
+
+
+def donate(request):
+    amount = request.POST.get("amount")
+    d_id = request.POST.get("d_id")
+    if (not amount.isdecimal()) or (float(amount) < 0):
+        return JsonResponse({'error': 'Amount must be decimal and greater than zero'}, status=409)
+    fund = Fundraising.objects.get(pk=d_id)
+    fund.current_amount = fund.current_amount + float(amount)
+    if fund.current_amount >= float(fund.amount):
+        fund.end = True
+    fund.save()
+    donation = Donation(amount=amount, fundraising=fund, user_id=request.user.pk)
+    donation.save()
+    return JsonResponse({'succ': 'Thank you'}, status=200)
+
+
+def end_donation(request):
+    f_id = request.GET.get("id", '')
+    print(f_id)
+    f = Fundraising.objects.get(pk=f_id)
+    f.end = True
+    f.save()
+    return JsonResponse({'succ': 'Ok'}, status=200)
+
+
+def add_fund(request):
+    amount = request.GET.get("amount", '')
+    description = request.GET.get("description", '')
+    if description == '' or amount == '':
+        return JsonResponse({'error': 'Form not filled'}, status=409)
+    f = Fundraising(amount=amount, description=description)
+    f.save()
+    return JsonResponse({'succ': 'Ok'}, status=200)
