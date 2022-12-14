@@ -35,6 +35,8 @@
     {% endif %}
 
     {% if user.position == "verified" %}
+        <span class="" id="fav-count">{{ animal.fav_count }}</span>
+        <button class="fav_btn" id="fav-btn" value="{{ animal.pk }}"> ❤ Add to favorite</button> |
         <a href="{% url 'user_walks' animal.pk %}">Manage walks</a>
     {% endif %}
 </div>

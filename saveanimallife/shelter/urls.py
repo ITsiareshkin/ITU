@@ -8,8 +8,10 @@ urlpatterns = [
     path('animals/', Animals_Ajax.as_view(), name='animals'),
     path('animals/<int:animalid>/', AnimalProfile.as_view(), name='animal'),
     path('addanimal/', ShowAddAnimal.as_view(), name='addanimal'),
-    path('animals/edit/<int:animalid>', EditAnimal.as_view(), name='edit_animal'),
-    path('animals/<int:animalid>/delete', AnimalDelete.as_view(), name='animal_delete'),
+
+    path('animals/<int:animalid>/edit/', EditAnimal.as_view(), name='edit_animal'),
+    path('animals/<int:animalid>/delete/', AnimalDelete.as_view(), name='animal_delete'),
+    path('animals/<int:animalid>/favorite/', favorites, name='favorites'),
 
     path('about_us/', about_us, name='about_us'),
     path('login/', Login.as_view(), name='login'),
@@ -18,7 +20,7 @@ urlpatterns = [
     path('edit_profile/', EditProfile.as_view(), name='edit_profile'),
     path('change_password/', PasswordChange.as_view(), name='change_password'),
     path('user/<username>/', ShowUserPage.as_view(), name='show_user'),
-    path('user/edit/<username>', UserEdit.as_view(), name='user_edit'),
+    path('user/edit/<username>/', UserEdit.as_view(), name='user_edit'),
     path('users/', ShowUsers.as_view(), name='users'),
     path('users/adduser/', AddUser.as_view(), name='adduser'),
 

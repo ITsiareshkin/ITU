@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import Http404, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
@@ -52,7 +52,6 @@ class AnimalProfile(DataMixin, DetailView):
         context['menu'] = menu
         return context
 
-
 @method_decorator(login_required, name='dispatch')
 class AnimalDelete(View):
     def get(self, request, *args, **kwargs):
@@ -83,17 +82,18 @@ class EditAnimal(DataMixin, UserPassesTestMixin, UpdateView):
         return False
 
     def get_success_url(self):
-        return reverse_lazy('animals')
+        return reverse_lazy('animal', args=[self.kwargs['animalid']])
 
 
 @method_decorator(login_required, name='dispatch')
 class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
     form_class = AddAnimalForm
     template_name = 'shelter/addanimal.html'
-    success_url = reverse_lazy('animals')
+
     def get(self, request, *args, **kwargs):
         if not is_ajax(self.request):
             return redirect(reverse_lazy('animals'))
+
     def post(self, request, *args, **kwargs):
         if not is_ajax(self.request):
             return redirect(reverse_lazy('animals'))
@@ -116,6 +116,25 @@ class ShowAddAnimal(DataMixin, UserPassesTestMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Add animal")
         return dict(list(context.items()) + list(c_def.items()))
+
+
+@login_required
+def favorites(request, animalid):
+    if request.user.position == 'verified':
+        if request.POST.get('action') == 'animal':
+            result = ''
+            animal = get_object_or_404(Animal, id=animalid)
+            if animal.favorite.filter(id=request.user.id).exists():
+                animal.favorite.remove(request.user)
+                animal.fav_count -= 1
+                result = animal.fav_count
+                animal.save()
+            else:
+                animal.favorite.add(request.user)
+                animal.fav_count += 1
+                result = animal.fav_count
+                animal.save()
+            return JsonResponse({'result': result, }, status=200)
 
 
 def about_us(request):
@@ -324,7 +343,7 @@ class ShowUsers(UserPassesTestMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = "User page"
+        context['title'] = "Users list"
         context['menu'] = menu
         return context
 
@@ -595,7 +614,15 @@ class Animals_Ajax(DataMixin, View):
         f_kind = request.GET.get('kind', '')
         f_gender = request.GET.get('gender', '')
         f_age = request.GET.get('age', '')
+        f_show = request.GET.get('show', '')
+
         self.object_list = Animal.objects.all()
+
+        if f_show == 'all':
+            self.object_list = Animal.objects.all()
+        elif f_show == 'fav':
+            self.object_list = Animal.objects.filter(favorite__id=request.user.id)
+
         if f_kind != '':
             if f_kind == 'cat':
                 self.object_list = self.object_list.filter(kind='Cat')

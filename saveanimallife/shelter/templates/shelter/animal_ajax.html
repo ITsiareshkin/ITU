@@ -8,6 +8,12 @@
         <form id="filter">
             <div class="row">
                 <div class="animal_filters">
+                    <select class="form-control" name="show" onchange="page_change(1)">
+                        <option value="all" selected="selected">Select all</option>
+                        <option value="fav">Select favorite</option>
+                    </select>
+                </div>
+                <div class="animal_filters">
                     <select class="form-control" name="kind" id="kind" onchange="page_change(1)">
                         <option value="" selected="selected">Kind</option>
                         <option value="cat">Cat</option>

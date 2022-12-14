@@ -8,6 +8,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="shortcut icon" href="{% static 'shelter/images/logo.ico' %}" type="image/x-icon"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 </head>
 
 <body>
@@ -25,9 +27,9 @@
                                 {% for m in menu %}
                                     <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
                                 {% endfor %}
-                                {% if user.position == "employee" or user.position == "admin" %}
-                                    <li><a href="{% url 'users' %}">Users</a></li>
-                                {% endif %}
+{#                                {% if user.position == "employee" or user.position == "admin" %}#}
+{#                                    <li><a href="{% url 'users' %}">Users</a></li>#}
+{#                                {% endif %}#}
                                 {% if user.position == "employee" %}
                                     <li><a href="{% url 'addanimal' %}" class='popup-link'>Add animal</a></li>
                                     <li><a href="{% url 'today_walks' %}">Walks</a></li>
@@ -83,45 +85,44 @@
     </table>
     <div id="/addanimal/" class="popup">
         <div class="popup__body">
-        <div class="popup__content">
-           <a href="" class="popup__close close-popup">X</a>
-            <div class="popup__title">Add animal</div>
-            <div class="popup__text">
-				<form method="post" enctype="multipart/form-data" id="animal_form">
-                    {% csrf_token %}
-					<p><label class="form-label" for="id_name">Name: </label><input type="text" name="name" class="form-input" maxlength="30" required="" id="id_name"></p>
+            <div class="popup__content">
+               <a href="" class="popup__close close-popup">X</a>
+                <div class="popup__title">Add animal</div>
+                <div class="popup__text">
+                    <form method="post" enctype="multipart/form-data" id="animal_form">
+                        {% csrf_token %}
+                        <p><label class="form-label" for="id_name">Name: </label><input type="text" name="name" class="form-input" maxlength="30" required="" id="id_name"></p>
 
-					<p><label class="form-label" for="id_kind">Kind: </label>
-					<select name="kind" id="id_kind">
-						<option value="Dog">Dog</option>
-						<option value="Cat">Cat</option>
-					</select></p>
+                        <p><label class="form-label" for="id_kind">Kind: </label>
+                        <select name="kind" id="id_kind">
+                            <option value="Dog">Dog</option>
+                            <option value="Cat">Cat</option>
+                        </select></p>
 
-					<p><label class="form-label" for="id_breed">Breed: </label><input type="text" name="breed" class="form-input" maxlength="50" id="id_breed"></p>
+                        <p><label class="form-label" for="id_breed">Breed: </label><input type="text" name="breed" class="form-input" maxlength="50" id="id_breed"></p>
 
-					<p><label class="form-label" for="id_age">Age: </label><input type="text" name="age" class="form-input" required="" id="id_age"></p>
+                        <p><label class="form-label" for="id_age">Age: </label><input type="text" name="age" class="form-input" required="" id="id_age"></p>
 
-					<p><label class="form-label" for="id_color">Color: </label><input type="text" name="color" class="form-input" maxlength="50" id="id_color"></p>
+                        <p><label class="form-label" for="id_color">Color: </label><input type="text" name="color" class="form-input" maxlength="50" id="id_color"></p>
 
-					<p><label class="form-label" for="id_gender">Gender: </label>
-					<select name="gender" id="id_gender">
-						<option value="Male">Male</option>
-						<option value="Female">Female</option>
-					</select></p>
+                        <p><label class="form-label" for="id_gender">Gender: </label>
+                        <select name="gender" id="id_gender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select></p>
 
-					<p><label class="form-label" for="id_discription">Discription: </label><textarea name="discription" cols="40" rows="10" class="form-input" required="" id="id_discription"></textarea></p>
+                        <p><label class="form-label" for="id_discription">Discription: </label><textarea name="discription" cols="40" rows="10" class="form-input" required="" id="id_discription"></textarea></p>
 
-					<p><label class="form-label" for="id_photo">Photo: </label><input type="file" name="photo" accept="image/*" required="" id="id_photo"></p>
+                        <p><label class="form-label" for="id_photo">Photo: </label><input type="file" name="photo" accept="image/*" required="" id="id_photo"></p>
 
-					<button type="submit">Add</button>
-				</form>
+                        <button type="submit">Add</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    {% block popup %}
+    {% endblock popup %}
     <script src="{% static 'shelter/js/popups.js' %}"></script>
     {% block javascript %}
     {% endblock javascript %}

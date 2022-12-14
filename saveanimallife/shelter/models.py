@@ -84,6 +84,8 @@ class Animal(models.Model):
     photo = models.ImageField(upload_to='photos/%Y/%m/%d')
     added = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
+    favorite = models.ManyToManyField(Account, default=None, blank=True)
+    fav_count = models.BigIntegerField(default='0')
 
     def __str__(self):
         return self.name

@@ -1,9 +1,7 @@
 const popupLinks = document.querySelectorAll('.popup-link');
 const body = document.querySelector('body');
 const lockPadding = document.querySelectorAll('.lock-padding');
-
 let unlock = true;
-
 const timeout = 800;
 
 if (popupLinks.length > 0) {
@@ -112,13 +110,42 @@ $("#animal_form").submit(function (e) {
             popupClose(popupActive, true);
             window.alert("Animal added");
             let addr = window.location.toString();
-            if (addr.indexOf('/animals/') != -1){
+            if (addr.indexOf('/animals/') != -1) {
                 page_change(1);
             }
         },
-        error: function (response) {
-            alert(response["responseJSON"]["error"]);
+        error: function (xhr, errmsg, err) {
         }
     })
 })
+
+
+$(document).on('click', '#fav-btn', function (e) {
+    e.preventDefault();
+    $.ajax({
+        type: 'POST',
+        url: 'favorite/',
+        data: {
+            animalid: $('#fav-btn').val(),
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            action: 'animal'
+        },
+        success: function (response) {
+            document.getElementById('fav-count').innerHTML = response['result']
+        },
+        error: function (xhr, errmsg, err) {
+        }
+    });
+});
+
+$(".fav_btn").on("click", function() {
+    const list = document.querySelectorAll('.current');
+    if (list.length <= 0) {
+        $(this).addClass("current");
+    } else {
+         $(this).removeClass("current");
+    }
+});
+
+
 
