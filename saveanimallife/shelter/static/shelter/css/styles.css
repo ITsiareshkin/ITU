@@ -353,3 +353,124 @@ div.animal_filters {
 	font-size: 20px;
 	text-decoration: none;
 }
+
+.popup__text {
+
+}
+
+
+.progress-bar {
+  height: 20px;
+  background: #1da1f2;
+  box-shadow: 2px 14px 15px -7px rgba(30, 166, 250, 0.36);
+  border-radius: 50px;
+  width: 10%;
+}
+.progress-back {
+  height: 20px;
+  background: #E2E2E2;
+  box-shadow: 2px 14px 15px -7px rgba(30, 166, 250, 0.36);
+  border-radius: 50px;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.progress {
+  width: 40%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: start;
+  padding: 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0px 10px 50px #abb7e9;
+  margin-bottom: 1rem;
+}
+
+/********************************************************************************************************/
+.cell_width{
+    width: 40px;
+    height: 50px;
+
+ }
+ 
+ .cell_hyght{
+     min-height: 20px;
+     max-height: 20px;
+ }
+ 
+ .border {
+     border:1px solid black;
+     text-align: center;
+ }
+
+.cent {
+    float:left;
+    margin-right:5px;
+  }
+.ele3{
+    clear:both;
+  }
+
+.line:hover {
+    background-color: rgb(198, 239, 211);
+}
+
+.line1{
+	background-color: rgb(245, 127, 119);
+}
+
+.line1:hover {
+    background-color: rgb(240, 151, 123);
+}
+
+/*************************************************************************************************/
+
+#team {
+    clear: both;
+    border-bottom: 1px dashed #898989;
+    max-width:50%;
+    width:auto;
+    margin:auto;
+    overflow:hiden;
+}
+
+#team .content {
+    display: grid;
+    justify-items: center;
+    grid-template-columns: auto auto auto auto;
+    column-gap: 5px;
+}
+
+#team .team-card {
+    max-width: 280px;
+    min-width: 180px;
+    grid-row: 2;
+    box-shadow: 0 4px 8px 0 #4d4d4d;
+    border-radius: 5px;
+    text-align: center;
+    vertical-align: center;
+}
+
+#team .team-card:hover {
+    box-shadow: 0 4px 8px 0 rgb(37, 153, 85);
+}
+
+#team .team-card:hover h3 {
+    color: rgb(219, 79, 69);
+}
+
+#team h3 {
+    font-size: 16px;
+    padding-top: 1em;
+    padding-bottom: 1em;
+	padding-left: 5px;
+	padding-right: 5px;
+    font-weight: 900;
+}
+
+.donations_list:nth-child(odd){
+	float: right;
+    padding-bottom: 40px;
+}

@@ -46,6 +46,19 @@ class AnimalProfile(DataMixin, DetailView):
     pk_url_kwarg = 'animalid'
     context_object_name = 'animal'
 
+    def get(self, request, *args, **kwargs):
+        print()
+        try:
+            a = Animal.objects.get(pk=self.kwargs['animalid'])
+        except:
+            raise Http404
+        self.object = a
+        week_start = date.today() - timedelta(days=date.today().isocalendar()[2] - 1)
+        week_end = date.today() + timedelta(days=date.today().isocalendar()[2]-1)
+        week_number = date.today().isocalendar()[1]
+        context = self.get_context_data(week_start=week_start, week_end=week_end, week_number=week_number)
+        return self.render_to_response(context)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = context['animal']
@@ -530,7 +543,8 @@ class UserProfileWalks(DataMixin, BaseListView, TemplateResponseMixin):
                 is_empty = not self.object_list
             if is_empty:
                 raise Http404("Empty list and “%(class_name)s.allow_empty” is False.")
-        context = self.get_context_data()
+        week_start = date.today() - timedelta(days=date.today().isocalendar()[2] - 1)
+        context = self.get_context_data(week_start=week_start)
         return self.render_to_response(context)
 
     def get_queryset(self, request):
@@ -664,3 +678,84 @@ class Animals_Ajax(DataMixin, View):
     def get_context_data(self, animal):
         context = {'title': "Animals", 'menu': menu, 'animal': animal}
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+class Donations_View(DataMixin, View):
+    template_name = 'shelter/donations.html'
+
+    def get(self, request, *args, **kwargs):
+        if not is_ajax(self.request):
+            context = self.get_context_data()
+            return render(request, self.template_name, context)
+        sort = request.GET.get('kind', '')
+        object_list = Fundraising.objects.all()
+        if sort == 'not_ended':
+            object_list = object_list.filter(end=False)
+        elif sort == "ended":
+            object_list = object_list.filter(end=True)
+        serialized = serializers.serialize('json', list(object_list))
+        return JsonResponse({"donation": serialized}, status=200)
+
+    def get_context_data(self):
+        context = {'title': "Donations", 'menu': menu}
+        return context
+
+
+def donate(request):
+    amount = request.POST.get("amount")
+    d_id = request.POST.get("d_id")
+    if (not amount.isdecimal()) or (float(amount) < 0):
+        return JsonResponse({'error': 'Amount must be decimal and greater than zero'}, status=409)
+    fund = Fundraising.objects.get(pk=d_id)
+    fund.current_amount = fund.current_amount + float(amount)
+    if fund.current_amount >= float(fund.amount):
+        fund.end = True
+    fund.save()
+    donation = Donation(amount=amount, fundraising=fund, user_id=request.user.pk)
+    donation.save()
+    return JsonResponse({'succ': 'Thank you'}, status=200)
+
+
+def end_donation(request):
+    f_id = request.GET.get("id", '')
+    print(f_id)
+    f = Fundraising.objects.get(pk=f_id)
+    f.end = True
+    f.save()
+    return JsonResponse({'succ': 'Ok'}, status=200)
+
+
+def add_fund(request):
+    amount = request.GET.get("amount", '')
+    description = request.GET.get("description", '')
+    if description == '' or amount == '':
+        return JsonResponse({'error': 'Form not filled'}, status=409)
+    f = Fundraising(amount=amount, description=description)
+    f.save()
+    return JsonResponse({'succ': 'Ok'}, status=200)
+
+def get_week(request):
+    week_number = request.GET.get("week_number",'')
+    year_number = request.GET.get("year_number",'')
+    animal_id = request.GET.get("animal_id",'')
+    dte = year_number+'-W'+ week_number
+    first_day = datetime.strptime(dte+'-1', "%Y-W%W-%w")
+    last_day = first_day + timedelta(days=6)
+    days = WalkDays.objects.filter(animal_id=animal_id).filter(date__gte=first_day).filter(date__lte=last_day)
+    serialized_days = serializers.serialize('json', list(days))
+    return JsonResponse({"days": serialized_days}, status=200)
+
+def register_day(request):
+    day = request.GET.get("day",'')
+    time = request.GET.get("time",'')
+    animal_id = request.GET.get("animal_id",'')
+    day += str(date.today().isocalendar()[0])
+    day = datetime.strptime(day, "%d.%m%Y").date()
+    print(day)
+    w = WalkDays.objects.get(Q(date = day) & Q(animal_id = animal_id))
+    u = Account.objects.get(pk=request.user.pk)
+    w.user_id = u
+    w.time = time
+    w.save()
+    return JsonResponse({'succ': 'OK'}, status=200)

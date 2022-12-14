@@ -3,3 +3,6 @@
 /venv
 *.pyc
 db.sqlite3
+/saveanimallife/saveanimallife/__pycache__/
+/saveanimallife/shelter/__pycache__/
+/saveanimallife/shelter/migrations/__pycache__/

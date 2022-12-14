@@ -29,4 +29,15 @@ urlpatterns = [
     path('today_walks/', TodayWalks.as_view(), name="today_walks"),
 
     path('accounts/login/', Login.as_view(), name='login_logout'),
+
+    path('donations/', Donations_View.as_view(), name='donations'),
+    path('donate/', donate, name='donate'),
+    path('end_donation/', end_donation, name='end_donation'),
+    path('add_fundraising/', add_fund, name='add_fund'),
+
+    path('walk_week/', get_week, name='get_week'),
+    path('walk_register/', register_day, name='get_week'),
+
 ]
+
+

@@ -1,4 +1,5 @@
 {% extends 'shelter/base.html' %}
+{% load static %}
 {% block content %}
 
 <div class="container">
@@ -23,22 +24,191 @@
     <br>
     <p>My discription:</p>
     <div class="animal-spec">{{ animal.discription }}</div>
-
     <br>
     <br>
     <br>
-
     {% if user.position == "employee" %}
         <a href="{% url 'edit_animal' animal.pk %}">Edit animal profile</a> |
-        <a href="{% url 'manage_walks' animal.pk %}">Manage walks</a> |
         <a href="{% url 'animal_delete' animal.pk %}">Delete animal profile</a>
     {% endif %}
 
     {% if user.position == "verified" %}
         <span class="" id="fav-count">{{ animal.fav_count }}</span>
-        <button class="fav_btn" id="fav-btn" value="{{ animal.pk }}"> ❤ Add to favorite</button> |
-        <a href="{% url 'user_walks' animal.pk %}">Manage walks</a>
+        <button class="fav_btn" id="fav-btn" value="{{ animal.pk }}"> ❤ Add to favorite</button>
     {% endif %}
+
+    <div>
+        <div>
+            <section id="team">
+                <div class="content">
+                    <div id="week_1" onclick="newShed(this.id)" class="team-card">
+        
+                        <h3>{{week_start}} - {{week_end}}</h3>
+        
+                    </div>
+                    <div id="week_2" onclick="newShed(this.id)" class="team-card">
+                        
+                        <h3>19. 12. 2022–25. 12. 2022</h3>
+         
+                    </div>
+                    <div id="week_3" onclick="newShed(this.id)" class="team-card">
+                   
+                        <h3>26. 12. 2022–1. 1. 2022</h3>
+            
+                    </div>
+                    <div id="week_4" onclick="newShed(this.id)" class="team-card">
+                        
+                        <h3>2. 1. 2022–8. 1. 2022</h3>
+                 
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <div style="justify-content: center; display:flex; padding-top: 2rem;"> 
+            <div class="cent ele3">
+                <table   class="border" >
+                <tr style="text-align: left;" >
+                    <td ></td>
+                      <td >8</td>
+                      <td >9</td>
+                      <td >10</td>
+                      <td >11</td>
+                      <td >12</td>
+                      <td >13</td>
+                      <td >14</td>
+                      <td >15</td>
+                      <td >16</td>
+                      <td >17</td>
+                      <td>18</td>
+                      <td >19</td>
+                  </tr>
+                <tr class="border line">
+                    <td id="1" class="cell_width border"></td>
+                    <td id="108" onclick="sheduleFunction(this.id)" class="border cell_width"></td>
+                    <td id="109" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="110" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="111" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="112" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="113" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="114" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="115" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="116" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="117" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="118" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="119" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                </tr>
+                <tr class="border line">
+                    <td id="2" class="cell_width border"></td>
+                    <td id="208" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="209" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="210" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="211" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="212" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="213" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="214" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="215" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="216" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="217" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="218" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="219" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                </tr>
+                <tr class="border line">
+                    <td id="3" class="cell_width border"></td>
+                    <td id="308" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="309" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="310" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="311" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="312" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="313" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="314" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="315" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="316" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="317" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="318" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="319" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                </tr>
+                <tr class="border line">
+                    <td id="4" class="cell_width border"></td>
+                    <td id="408" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="409" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="410" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="411" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="412" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="413" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="414" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="415" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="416" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="417" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="418" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="419" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                </tr>
+                <tr class="border line">
+                    <td id="5" class="cell_width border"></td>
+                    <td id="508" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="509" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="510" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="511" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="512" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="513" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="514" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="515" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="516" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="517" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="518" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                    <td id="519" onclick="sheduleFunction(this.id)" class="cell_width border"></td>
+                </tr>
+                <tr class="border line1">
+                    <td id="6" class="cell_width border"></td>
+                    <td id="608" class="cell_width border"></td>
+                    <td id="609" class="cell_width border"></td>
+                    <td id="610" class="cell_width border"></td>
+                    <td id="611" class="cell_width border"></td>
+                    <td id="612" class="cell_width border"></td>
+                    <td id="613" class="cell_width border"></td>
+                    <td id="614" class="cell_width border"></td>
+                    <td id="615" class="cell_width border"></td>
+                    <td id="616" class="cell_width border"></td>
+                    <td id="617" class="cell_width border"></td>
+                    <td id="618" class="cell_width border"></td>
+                    <td id="619" class="cell_width border"></td>
+                </tr>
+                <tr class="border line1">
+                    <td id="7" class="cell_width border"></td>
+                    <td id="708" class="cell_width border"></td>
+                    <td id="709" class="cell_width border"></td>
+                    <td id="710" class="cell_width border"></td>
+                    <td id="711" class="cell_width border"></td>
+                    <td id="712" class="cell_width border"></td>
+                    <td id="713" class="cell_width border"></td>
+                    <td id="714" class="cell_width border"></td>
+                    <td id="715" class="cell_width border"></td>
+                    <td id="716" class="cell_width border"></td>
+                    <td id="717" class="cell_width border"></td>
+                    <td id="718" class="cell_width border"></td>
+                    <td id="719" class="cell_width border"></td>
+                </tr>
+                </table>
+            </div>
+        
+        </div>
+
+        </div>   
+
+            <div style="justify-content: right; display:flex; padding-top: 1em; width: 80%;" id="send_button" >
+                <button style="padding: 8px;" onclick="send_shed()" type="button">Complite</button>
+            </div>
+
+        <div id="animal_id" value={{animal.pk}} style="visibility:hidden">{{week_number}}</div>
+        <div id="week_num" value={{animal.pk}} style="visibility:hidden">{{week_number}}</div>
+    <br>
+    <br>
+    <br>
 </div>
 
 {% endblock content %}
+
+{% block javascript %}
+<script src="{% static 'shelter/js/scripts.js' %}"></script>
+<script src="{% static 'shelter/js/walkdays.js' %}"></script>
+{% endblock javascript %}
