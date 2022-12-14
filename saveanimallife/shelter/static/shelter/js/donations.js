@@ -43,20 +43,16 @@ function load_donations(){
 
 $("#donation_form").submit(function (e) {
     e.preventDefault();
-    var frm = $('#donation_form');
-    var formData = new FormData(frm[0]);
+    let serializedData = $("#donation_form").serialize();
     let url_a = "/donate/";
     $.ajax({
         type: 'POST',
         url: url_a,
-        data: formData,
-        processData: false,
-        contentType: false,
+        data: serializedData,
         success: function (response) {
             const popupActive = document.querySelector('.popup.open');
             popupClose(popupActive, true);
             window.alert("Thank you for your donation");
-            let addr = window.location.toString();
             load_donations()
             document.getElementById("donation_form").reset();
         },

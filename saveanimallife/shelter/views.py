@@ -513,6 +513,7 @@ class UserProfileWalks(DataMixin, BaseListView, TemplateResponseMixin):
                 is_empty = not self.object_list
             if is_empty:
                 raise Http404("Empty list and “%(class_name)s.allow_empty” is False.")
+
         context = self.get_context_data()
         return self.render_to_response(context)
 

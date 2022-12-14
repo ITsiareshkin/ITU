@@ -38,11 +38,10 @@ function load_donations(){
 
 function end_f(id){
     let url_a = "/end_donation/";
-    let serializedData = id.serialize()
     $.ajax({
         type: 'GET',
         url: url_a,
-        data: serializedData,
+        data: "id="+id,
         success: function (response) {
             load_donations();
             update_values();
@@ -52,3 +51,24 @@ function end_f(id){
         }
     })
 }
+
+$("#donation_form").submit(function (e) {
+    e.preventDefault();
+    let serializedData = $("#donation_form").serialize();
+    let url_a = "/add_fundraising/";
+    $.ajax({
+        type: 'GET',
+        url: url_a,
+        data: serializedData,
+        success: function (response) {
+            const popupActive = document.querySelector('.popup.open');
+            popupClose(popupActive, true);
+            window.alert("Created successfully ");
+            load_donations()
+            document.getElementById("donation_form").reset();
+        },
+        error: function (response) {
+            alert(response["responseJSON"]["error"]);
+        }
+    })
+})
