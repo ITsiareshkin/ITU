@@ -44,22 +44,22 @@
                 <div class="content">
                     <div id="week_1" onclick="newShed(this.id)" class="team-card">
         
-                        <h3>{{week_start}} - {{week_end}}</h3>
+                        <h3>{{  weeks_list.0|date:"d.m" }} - {{ weeks_list.1|date:"d.m" }}</h3>
         
                     </div>
                     <div id="week_2" onclick="newShed(this.id)" class="team-card">
                         
-                        <h3>19. 12. 2022–25. 12. 2022</h3>
+                        <h3>{{  weeks_list.2|date:"d.m" }} - {{ weeks_list.3 |date:"d.m"}}</h3>
          
                     </div>
                     <div id="week_3" onclick="newShed(this.id)" class="team-card">
                    
-                        <h3>26. 12. 2022–1. 1. 2022</h3>
+                        <h3>{{  weeks_list.4|date:"d.m" }} - {{ weeks_list.5|date:"d.m" }}</h3>
             
                     </div>
                     <div id="week_4" onclick="newShed(this.id)" class="team-card">
                         
-                        <h3>2. 1. 2022–8. 1. 2022</h3>
+                        <h3>{{  weeks_list.6|date:"d.m" }} - {{ weeks_list.7|date:"d.m" }}</h3>
                  
                     </div>
                 </div>
@@ -196,9 +196,11 @@
 
         </div>   
 
+        {% if not user.is_anonymous %}
             <div style="justify-content: right; display:flex; padding-top: 1em; width: 80%;" id="send_button" >
-                <button style="padding: 8px;" onclick="send_shed()" type="button">Complite</button>
+                <button style="padding: 8px;" onclick="send_shed()" type="button">Apply</button>
             </div>
+        {% endif %}
 
         <div id="animal_id" value={{animal.pk}} style="visibility:hidden">{{week_number}}</div>
         <div id="week_num" value={{animal.pk}} style="visibility:hidden">{{week_number}}</div>

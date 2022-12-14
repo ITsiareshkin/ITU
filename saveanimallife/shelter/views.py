@@ -52,10 +52,15 @@ class AnimalProfile(DataMixin, DetailView):
         except:
             raise Http404
         self.object = a
-        week_start = date.today() - timedelta(days=date.today().isocalendar()[2] - 1)
-        week_end = date.today() + timedelta(days=date.today().isocalendar()[2]-1)
+        weeks=[]
+        for i in range(4):
+            week_start = date.today() - timedelta(days=date.today().isocalendar()[2]-1) + timedelta(days=7*i)
+            week_end = week_start + timedelta(days=6) 
+            weeks.append(week_start) 
+            weeks.append(week_end) 
+        print(weeks)
         week_number = date.today().isocalendar()[1]
-        context = self.get_context_data(week_start=week_start, week_end=week_end, week_number=week_number)
+        context = self.get_context_data(weeks_list=weeks,week_number=week_number)
         return self.render_to_response(context)
 
     def get_context_data(self, *, object_list=None, **kwargs):

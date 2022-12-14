@@ -1,6 +1,8 @@
 // Author Danylo Pimenov, xpimen00
-function get_week(){
 
+
+function get_week(){
+    clear_table()
     let an_id = document.getElementById("animal_id"); 
     let animal_id = an_id.attributes.item(1).nodeValue;
 
@@ -27,8 +29,12 @@ function get_week(){
                     let cut_date = fields["date"].slice(5);
                     document.getElementById(i+1).textContent =  cut_date.slice(3,6) + "." + cut_date.slice(0,2);
                     if (fields["time"]!=null ) {
-                        let fr_tm = fields["time"].slice(0,2);
-                        let se_tm = fields["time"].slice(8,10);  
+                        tmp = fields["time"].indexOf(':');
+                        let fr_tm = fields["time"].slice(0,tmp);
+                        if (fr_tm.length<2){
+                            fr_tm = "0"+fr_tm;
+                        }
+                        let se_tm = fields["time"].slice(fields["time"].indexOf('-')+1,fields["time"].indexOf(':',tmp+1));  
                         let entr_id1 = i+1 + fr_tm;
                         let entr_id2 = i+1 + se_tm;
                         entr_id2 -= 1;
@@ -83,16 +89,16 @@ function send_shed(){
     if (counetr>0){
         if (counetr==3 ){
 
-            time = id2%100 + ":00 - " + (id0%100+1) + ":00";
+            time = id2%100 + ":00-" + (id0%100+1) + ":00";
 
         } else{
 
             if (counetr==2){
-                time = id1%100 + ":00 - " + (id0%100+1) + ":00";
+                time = id1%100 + ":00-" + (id0%100+1) + ":00";
 
             }else{
 
-                time = id0%100+ ":00 - " + (id0%100+1) + ":00";
+                time = id0%100+ ":00-" + (id0%100+1) + ":00";
 
             }
         
@@ -101,9 +107,6 @@ function send_shed(){
 
 
     let day = document.getElementById(Math.floor(id0/100)).textContent;
-
-   // console.log(day);
-   // console.log(time);
 
     url_a = "/walk_register/";
    let walk_param = "time="+time +"&day="+day+"&animal_id="+animal_id;
@@ -114,6 +117,10 @@ function send_shed(){
     success: function (response) {
         
         get_week();
+        counetr = 0;
+        id0=0; 
+        id1=0; 
+        id2=0;
        //window.alert(response);
 
     },
@@ -122,6 +129,7 @@ function send_shed(){
     }
 })
    
+    get_week();
 
 }
 
@@ -149,7 +157,7 @@ function newShed(id){
 
     clear_table()
     get_week();
-    
+
 }
 
 function clear_table(){
@@ -172,9 +180,7 @@ function clear_table(){
 
         }
 
-       // document.getElementById(i.toString()).style.backgroundColor = "white";
         document.getElementById(i.toString()).style.backgroundColor = "transparent";
-
 
     }
 
@@ -182,8 +188,8 @@ function clear_table(){
 
 function sheduleFunction(id) {
 
-    //&& document.getElementById(Math.floor(id/100)).style.backgroundColor !== rgba(231, 169, 87, 0.8)
-    if (counetr<3 && (document.getElementById(Math.floor(id/100)).style.backgroundColor !== rgba(231, 169, 87, 0.8)) ) {
+
+    if (counetr<3 /*&& document.getElementById(Math.floor(id/100)).style.backgroundColor !== rgba(231, 169, 87, 0.8)*/) {
 
         if ( document.getElementById(id).style.backgroundColor !== "rgba(112, 162, 242, 0.8)" ){
             id2 = id1;
@@ -211,11 +217,7 @@ function sheduleFunction(id) {
             
         }
           
-        if (counetr==3 && id0!=0){
-            document.getElementById(Math.floor(id0/100)).style.backgroundColor= "rgba(231, 169, 87, 0.8)"; 
-            } else {
-                document.getElementById(Math.floor(id0/100)).style.backgroundColor= "transparent";
-            }
+
 
     } else {
 
@@ -230,11 +232,7 @@ function sheduleFunction(id) {
             }
 
         }
-            if (counetr==3){
-                document.getElementById(Math.floor(id0/100)).style.backgroundColor= "rgba(231, 169, 87, 0.8)"; 
-            } else {
-                document.getElementById(Math.floor(id0/100)).style.backgroundColor= "transparent";
-            }
+
     }
    
 
