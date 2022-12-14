@@ -1,8 +1,8 @@
 // Author: Ivan Tsiareshkin, xtsiar00
 
-const popupLinks = document.querySelectorAll('.popup-link');
-const body = document.querySelector('body');
-const lockPadding = document.querySelectorAll('.lock-padding');
+var popupLinks = document.querySelectorAll('.popup-link');
+var body = document.querySelector('body');
+var lockPadding = document.querySelectorAll('.lock-padding');
 
 function update_values() {
     popupLinks = document.querySelectorAll('.popup-link');
