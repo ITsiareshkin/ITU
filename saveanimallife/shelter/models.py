@@ -147,7 +147,7 @@ class WalkDays(models.Model):
         return str(self.id)
 
     class Meta:
-        ordering = ('-date',)
+        ordering = ('date',)
 
 
 class Donation(models.Model):

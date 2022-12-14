@@ -53,7 +53,9 @@ class AnimalProfile(DataMixin, DetailView):
         except:
             raise Http404
         self.object = a
-        context = self.get_context_data()
+        week_start = date.today() - timedelta(days=date.today().isocalendar()[2] - 1)
+        week_end = date.today() + timedelta(days=date.today().isocalendar()[2]-1)
+        context = self.get_context_data(week_start=week_start, week_end=week_end)
         return self.render_to_response(context)
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -706,3 +708,15 @@ def add_fund(request):
     f = Fundraising(amount=amount, description=description)
     f.save()
     return JsonResponse({'succ': 'Ok'}, status=200)
+
+def get_week(request):
+    week_number = request.GET.get("week_number",'')
+    year_number = request.GET.get("year_number",'')
+    animal_id = request.GET.get("animal_id",'')
+    print(request.GET)
+    dte = year_number+'-W'+ week_number
+    first_day = datetime.strptime(dte+'-1', "%Y-W%W-%w")
+    last_day = first_day + timedelta(days=6)
+    days = WalkDays.objects.filter(animal_id=animal_id).filter(date__gte=first_day).filter(date__lte=last_day)
+    serialized_days = serializers.serialize('json', list(days))
+    return JsonResponse({"days": serialized_days}, status=200)

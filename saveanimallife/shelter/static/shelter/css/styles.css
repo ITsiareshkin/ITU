@@ -454,3 +454,10 @@ div.animal_filters {
 	padding-right: 5px;
     font-weight: 900;
 }
+
+/******************************************************************************************************/
+
+.donations_list:nth-child(odd){
+	float: right;
+    padding-bottom: 40px;
+}

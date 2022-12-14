@@ -33,4 +33,6 @@ urlpatterns = [
     path('end_donation/', end_donation, name='end_donation'),
     path('add_fundraising/', add_fund, name='add_fund'),
 
+    path('walk_week/', get_week, name='get_week'),
+
 ]
