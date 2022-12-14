@@ -410,6 +410,14 @@ div.animal_filters {
     background-color: rgb(198, 239, 211);
 }
 
+.line1{
+	background-color: rgb(245, 127, 119);
+}
+
+.line1:hover {
+    background-color: rgb(240, 151, 123);
+}
+
 /*************************************************************************************************/
 
 #team {
@@ -443,7 +451,7 @@ div.animal_filters {
 }
 
 #team .team-card:hover h3 {
-    color: steelblue;
+    color: rgb(219, 79, 69);
 }
 
 #team h3 {

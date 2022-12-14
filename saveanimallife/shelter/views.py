@@ -55,7 +55,8 @@ class AnimalProfile(DataMixin, DetailView):
         self.object = a
         week_start = date.today() - timedelta(days=date.today().isocalendar()[2] - 1)
         week_end = date.today() + timedelta(days=date.today().isocalendar()[2]-1)
-        context = self.get_context_data(week_start=week_start, week_end=week_end)
+        week_number = date.today().isocalendar()[1]
+        context = self.get_context_data(week_start=week_start, week_end=week_end, week_number=week_number)
         return self.render_to_response(context)
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -713,10 +714,23 @@ def get_week(request):
     week_number = request.GET.get("week_number",'')
     year_number = request.GET.get("year_number",'')
     animal_id = request.GET.get("animal_id",'')
-    print(request.GET)
     dte = year_number+'-W'+ week_number
     first_day = datetime.strptime(dte+'-1', "%Y-W%W-%w")
     last_day = first_day + timedelta(days=6)
     days = WalkDays.objects.filter(animal_id=animal_id).filter(date__gte=first_day).filter(date__lte=last_day)
     serialized_days = serializers.serialize('json', list(days))
     return JsonResponse({"days": serialized_days}, status=200)
+
+def register_day(request):
+    day = request.GET.get("day",'')
+    time = request.GET.get("time",'')
+    animal_id = request.GET.get("animal_id",'')
+    day += str(date.today().isocalendar()[0])
+    day = datetime.strptime(day, "%d.%m%Y").date()
+    print(day)
+    w = WalkDays.objects.get(Q(date = day) & Q(animal_id = animal_id))
+    u = Account.objects.get(pk=request.user.pk)
+    w.user_id = u
+    w.time = time
+    w.save()
+    return JsonResponse({'succ': 'OK'}, status=200)

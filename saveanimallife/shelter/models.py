@@ -140,7 +140,7 @@ class Fundraising(models.Model):
 class WalkDays(models.Model):
     date = models.DateField(null=False, blank=False, default=0)
     animal_id = models.ForeignKey(Animal, on_delete=models.CASCADE, null=False, blank=False)
-    time = models.TimeField(default=None, null=True)
+    time = models.CharField(max_length=100,default=None, null=True)
     user_id = models.ForeignKey(Account, on_delete=models.CASCADE, default=None, null=True)
  
     def __str__(self):
