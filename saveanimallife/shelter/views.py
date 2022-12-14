@@ -46,6 +46,12 @@ class AnimalProfile(DataMixin, DetailView):
     pk_url_kwarg = 'animalid'
     context_object_name = 'animal'
 
+    def get(self, request, *args, **kwargs):
+            animal_id = request.GET.get('animal', '')
+            if walk_id != '':
+                to_register = request.GET.get('register', '')
+                
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = context['animal']
@@ -513,7 +519,8 @@ class UserProfileWalks(DataMixin, BaseListView, TemplateResponseMixin):
                 is_empty = not self.object_list
             if is_empty:
                 raise Http404("Empty list and “%(class_name)s.allow_empty” is False.")
-        context = self.get_context_data()
+        week_start = date.today() - timedelta(days=date.today().isocalendar()[2] - 1)
+        context = self.get_context_data(week_start=week_start)
         return self.render_to_response(context)
 
     def get_queryset(self, request):
