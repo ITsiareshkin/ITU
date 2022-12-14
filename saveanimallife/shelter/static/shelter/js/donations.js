@@ -1,3 +1,4 @@
+// Author: Dmytro Sadovskyi, xsadov06
 function set_form_value(id){
     var d_input = document.getElementById("d_id");
     d_input.value=id;

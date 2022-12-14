@@ -47,7 +47,6 @@ class AnimalProfile(DataMixin, DetailView):
     context_object_name = 'animal'
 
     def get(self, request, *args, **kwargs):
-        print()
         try:
             a = Animal.objects.get(pk=self.kwargs['animalid'])
         except:

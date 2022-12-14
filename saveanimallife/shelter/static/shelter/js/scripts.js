@@ -1,3 +1,4 @@
+// Author: Dmytro Sadovskyi, xsadov06
 function page_change(id){
     var serializedData = $("#filter").serialize();
     let url_a = "/animals/?page="+id.toString();

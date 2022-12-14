@@ -1,3 +1,4 @@
+// Author: Dmytro Sadovskyi, xsadov06
 function load_donations(){
     var serializedData = $("#filter").serialize();
     let url_a = "/donations/";

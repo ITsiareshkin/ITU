@@ -1,3 +1,4 @@
+// Author Danylo Pimenov, xpimen00
 function get_week(){
 
     let an_id = document.getElementById("animal_id"); 
