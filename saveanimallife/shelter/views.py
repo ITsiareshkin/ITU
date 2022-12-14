@@ -58,7 +58,6 @@ class AnimalProfile(DataMixin, DetailView):
             week_end = week_start + timedelta(days=6) 
             weeks.append(week_start) 
             weeks.append(week_end) 
-        print(weeks)
         week_number = date.today().isocalendar()[1]
         context = self.get_context_data(weeks_list=weeks,week_number=week_number)
         return self.render_to_response(context)

@@ -140,7 +140,6 @@ $("#animal_form").submit(function (e) {
     })
 })
 
-
 $(document).on('click', '#fav-btn', function (e) {
     e.preventDefault();
     $.ajax({
