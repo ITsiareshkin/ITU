@@ -47,10 +47,14 @@ class AnimalProfile(DataMixin, DetailView):
     context_object_name = 'animal'
 
     def get(self, request, *args, **kwargs):
-            animal_id = request.GET.get('animal', '')
-            if walk_id != '':
-                to_register = request.GET.get('register', '')
-                
+        print()
+        try:
+            a = Animal.objects.get(pk=self.kwargs['animalid'])
+        except:
+            raise Http404
+        self.object = a
+        context = self.get_context_data()
+        return self.render_to_response(context)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
