@@ -152,19 +152,15 @@ $(document).on('click', '#fav-btn', function (e) {
         },
         success: function (response) {
             document.getElementById('fav-count').innerHTML = response['result']
+            if (response['isliked'] === 1) {
+                document.getElementById('fav-btn').classList.add("current");
+            } else {
+                document.getElementById('fav-btn').classList.remove("current");
+            }
         },
         error: function (xhr, errmsg, err) {
         }
     });
-});
-
-$(".fav_btn").on("click", function() {
-    const list = document.querySelectorAll('.current');
-    if (list.length <= 0) {
-        $(this).addClass("current");
-    } else {
-         $(this).removeClass("current");
-    }
 });
 
 
