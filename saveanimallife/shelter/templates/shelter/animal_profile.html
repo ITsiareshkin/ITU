@@ -35,7 +35,11 @@
 
     {% if user.position == "verified" %}
         <span class="" id="fav-count">{{ animal.fav_count }}</span>
-        <button class="fav_btn" id="fav-btn" value="{{ animal.pk }}"> ❤ Add to favorite</button>
+        {% if user_f.pk == user.id %}
+            <button class="fav_btn current" id="fav-btn" value="{{ animal.pk }}"> ❤ Add to favorite</button>
+        {% else %}
+            <button class="fav_btn" id="fav-btn" value="{{ animal.pk }}"> ❤ Add to favorite</button>
+        {% endif %}
     {% endif %}
 
     <div>
