@@ -151,12 +151,13 @@ def favorites(request, animalid):
                 animal.fav_count -= 1
                 result = animal.fav_count
                 animal.save()
+                return JsonResponse({'result': result, 'isliked': 0}, status=200)
             else:
                 animal.favorite.add(request.user)
                 animal.fav_count += 1
                 result = animal.fav_count
                 animal.save()
-            return JsonResponse({'result': result, }, status=200)
+                return JsonResponse({'result': result, 'isliked': 1}, status=200)
 
 
 def about_us(request):
