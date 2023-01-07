@@ -51,6 +51,12 @@ class AnimalProfile(DataMixin, DetailView):
             a = Animal.objects.get(pk=self.kwargs['animalid'])
         except:
             raise Http404
+        
+        try:
+            user_f = a.favorite.get(id=request.user.id)
+        except:
+            user_f = None
+        
         self.object = a
         weeks=[]
         for i in range(4):
@@ -59,7 +65,7 @@ class AnimalProfile(DataMixin, DetailView):
             weeks.append(week_start) 
             weeks.append(week_end) 
         week_number = date.today().isocalendar()[1]
-        context = self.get_context_data(weeks_list=weeks,week_number=week_number)
+        context = self.get_context_data(weeks_list=weeks,week_number=week_number, user_f=user_f)
         return self.render_to_response(context)
 
     def get_context_data(self, *, object_list=None, **kwargs):
