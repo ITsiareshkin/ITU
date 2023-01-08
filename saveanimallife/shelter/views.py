@@ -753,6 +753,15 @@ def get_week(request):
     first_day = datetime.strptime(dte+'-1', "%Y-W%W-%w")
     last_day = first_day + timedelta(days=6)
     days = WalkDays.objects.filter(animal_id=animal_id).filter(date__gte=first_day).filter(date__lte=last_day)
+    if len(days) == 0:
+        animal = Animal.objects.get(pk=animal_id)
+        now = datetime.today()
+        ws = first_day
+        for i in range(7):
+            day = ws + timedelta(days=i)
+            w = WalkDays(animal_id=animal, date=day)
+            w.save()
+    days = WalkDays.objects.filter(animal_id=animal_id).filter(date__gte=first_day).filter(date__lte=last_day)
     serialized_days = serializers.serialize('json', list(days))
     return JsonResponse({"days": serialized_days}, status=200)
 
