@@ -126,8 +126,7 @@ var id0=0, id1=0, id2=0;
 
 function send_shed(){
 
-    let an_id = document.getElementById("animal_id"); 
-    let animal_id = an_id.attributes.item(1).nodeValue;
+    let animal_id = document.getElementById("animal_id").attributes.item(1).nodeValue; 
 
     if (counetr>0){
         if (counetr==3 ){
