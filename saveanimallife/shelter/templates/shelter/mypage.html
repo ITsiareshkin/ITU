@@ -11,48 +11,48 @@
         <a href="{% url 'edit_profile' %}">Edit profile</a> | <a href="{% url 'change_password' %}">Change password</a>
 
         
-            <div style="justify-content: center; display:flex; padding-top: 2rem;"> 
-                <div class="cent ele3">
-                    <table>
-                            <tr>
-                                <th>Animal&nbsp&nbsp</th>
-                                <th>Start&nbsp&nbsp</th>
-                                <th>End&nbsp&nbsp</th>
-                            </tr>
-                        {% for walk in walks %}
-                            <tr>
-                                <th></th>
-                                <th>{{walk.starting|date:"d.m.Y H:i"}} | </th>
-                                <th>{{walk.ending|date:"d.m.Y H:i"}} | </th>
-                            
-                            </tr>
-                    {% endfor %}
-                    </table>
-                    
-            </div>
+{#            <div style="justify-content: center; display:flex; padding-top: 2rem;"> #}
+{#                <div class="cent ele3">#}
+{#                    <table>#}
+{#                            <tr>#}
+{#                                <th>Animal&nbsp&nbsp</th>#}
+{#                                <th>Start&nbsp&nbsp</th>#}
+{#                                <th>End&nbsp&nbsp</th>#}
+{#                            </tr>#}
+{#                        {% for walk in walks %}#}
+{#                            <tr>#}
+{#                                <th></th>#}
+{#                                <th>{{walk.starting|date:"d.m.Y H:i"}} | </th>#}
+{#                                <th>{{walk.ending|date:"d.m.Y H:i"}} | </th>#}
+{#                            #}
+{#                            </tr>#}
+{#                    {% endfor %}#}
+{#                    </table>#}
+{#                    #}
+{#            </div>#}
+{##}
+{#            <script src="{% static 'shelter/js/scripts.js' %}"></script>#}
+{##}
+{#            </div>#}
 
-            <script src="{% static 'shelter/js/scripts.js' %}"></script>
-
-            </div>
-
-{% if user.position == "verified" %}
-    {% if walks %}
-        <table>
-            <tr><th>Start</th><th>End</th><th>Status</th><th></th></tr>
-        {% for walk in walks %}
-            <tr>
-                <th> {{walk.starting|date:"d.m.Y H:i"}} | </th>
-                <th>{{walk.ending|date:"d.m.Y H:i"}} | </th>
-                <th>{{walk.status}}</th>
-                <th>
-                    {% if walk.status == 'confirmed' and walk.walker_id == user.pk  %}
-                    <a href="{% url 'mypage' %}?register=0&walk={{walk.pk}}">Cancel</a>
-                    {% endif %}
-                </th>
-            </tr>
-        {% endfor %}
-        </table>
-    {% endif %}
-{% endif %}
+{#{% if user.position == "verified" %}#}
+{#    {% if walks %}#}
+{#        <table>#}
+{#            <tr><th>Start</th><th>End</th><th>Status</th><th></th></tr>#}
+{#        {% for walk in walks %}#}
+{#            <tr>#}
+{#                <th> {{walk.starting|date:"d.m.Y H:i"}} | </th>#}
+{#                <th>{{walk.ending|date:"d.m.Y H:i"}} | </th>#}
+{#                <th>{{walk.status}}</th>#}
+{#                <th>#}
+{#                    {% if walk.status == 'confirmed' and walk.walker_id == user.pk  %}#}
+{#                    <a href="{% url 'mypage' %}?register=0&walk={{walk.pk}}">Cancel</a>#}
+{#                    {% endif %}#}
+{#                </th>#}
+{#            </tr>#}
+{#        {% endfor %}#}
+{#        </table>#}
+{#    {% endif %}#}
+{#{% endif %}#}
 
 {% endblock content %}
