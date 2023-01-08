@@ -354,11 +354,6 @@ div.animal_filters {
 	text-decoration: none;
 }
 
-.popup__text {
-
-}
-
-
 .progress-bar {
   height: 20px;
   background: #1da1f2;
@@ -473,4 +468,33 @@ div.animal_filters {
 .donations_list:nth-child(odd){
 	float: right;
     padding-bottom: 40px;
+}
+
+.delete_reservation {
+
+    width: 40px;
+    height: 50px;
+    background-color: #e84e4e;
+	
+    color: white;
+	visibility:hidden;
+
+}
+
+.delete_reservation:hover {
+
+    background-color: #edb53d;
+    
+}
+
+.apply_button{
+	padding: 8px;
+	width: 180px;
+	border-radius: 5px;
+	text-align: center;
+	vertical-align: center;
+	background-color: #0d88d6;
+	color: white;
+	font-size: large;
+	
 }

@@ -85,6 +85,7 @@ class Animal(models.Model):
     edited = models.DateTimeField(auto_now=True)
     favorite = models.ManyToManyField(Account, default=None, blank=True)
     fav_count = models.BigIntegerField(default='0')
+    block_registration = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -104,7 +105,7 @@ class Walk(models.Model):
     ending = models.DateTimeField(null=False, blank=False)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.id) + " " + str(self.starting)
 
     class Meta:
         ordering = ('-starting',)
@@ -146,7 +147,7 @@ class WalkDays(models.Model):
     user_id = models.ForeignKey(Account, on_delete=models.CASCADE, default=None, null=True)
  
     def __str__(self):
-        return str(self.id)
+        return str(self.id) + " " + str(self.user_id) + " " + str(self.time)
 
     class Meta:
         ordering = ('date',)

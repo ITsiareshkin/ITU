@@ -27,33 +27,16 @@
     <br>
     <table>
         <tr>
+            <th>Animal&nbsp&nbsp</th>
             <th>Start&nbsp&nbsp</th>
             <th>End&nbsp&nbsp</th>
-            <th>Animal&nbsp&nbsp</th>
-            <th>Volunteer&nbsp&nbsp</th>
-            <th>Status</th>
         </tr>
     {% for walk in walks %}
         <tr>
+            <th></th>
             <th>{{walk.starting|date:"d.m.Y H:i"}} | </th>
             <th>{{walk.ending|date:"d.m.Y H:i"}} | </th>
-            <th>
-                <a href="{% url 'animal' walk.animal_id %}">{{walk.animal.name}}</a>
-            </th>
-            <th>
-                |
-                {% if walk.walker.id %}
-                    <a href="{% url 'show_user' walk.walker.username %}">{{walk.walker.username}}</a>
-                {% endif %}
-            </th>
-            <th> | {{walk.status}} | </th>
-            <th>
-                {% if walk.status == 'confirmed' %}
-                    <a href="{% url 'today_walks' %}?start=1&walk={{walk.pk}}&status={{request.GET.status}}&date={{request.GET.date}}">Start</a> |
-                {% elif walk.status == 'started' %}
-                    <a href="{% url 'today_walks' %}?end=1&walk={{walk.pk}}&status={{request.GET.status}}&date={{request.GET.date}}">End</a> |
-                {% endif %}
-            </th>
+        
         </tr>
     {% endfor %}
     </table>

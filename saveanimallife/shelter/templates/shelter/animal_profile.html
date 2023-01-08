@@ -42,6 +42,13 @@
         {% endif %}
     {% endif %}
 
+
+    {% if user.is_anonymous %}
+            <div style="justify-content: center; display:flex; padding-left: 7em; width: 80%;">
+                <p style="font-size: 25px; color: red;">For walk registration u need to log in</p>
+            </div>
+    {% endif %}
+
     <div>
         <div>
             <section id="team">
@@ -71,7 +78,7 @@
         </div>
         
         <div style="justify-content: center; display:flex; padding-top: 2rem;"> 
-            <div class="cent ele3">
+            <div class="cent">
                 <table   class="border" >
                 <tr style="text-align: left;" >
                     <td ></td>
@@ -194,20 +201,43 @@
                     <td id="719" class="cell_width border"></td>
                 </tr>
                 </table>
+
+                
+
             </div>
-        
-        </div>
+                
+            <div style="padding-top: 34px; padding-left: 1em;" >
+                
+                        <div >
+                            <button id="11" onclick="delete_walk(this.id)" class="delete_reservation">&#10006;</button>  
+                        </div>
+                        <div style="padding-top: 6px;" >
+                            <button id="22" onclick="delete_walk(this.id)" class="delete_reservation">&#10006;</button>  
+                        </div>
+                        <div style="padding-top: 6px;" >
+                            <button id="33" onclick="delete_walk(this.id)"  class="delete_reservation">&#10006;</button>  
+                        </div>
+                        <div style="padding-top: 6px;"  >
+                            <button id="44" onclick="delete_walk(this.id)"  class="delete_reservation">&#10006;</button>  
+                        </div>
+                        <div style="padding-top: 6px;"  >
+                            <button id="55" onclick="delete_walk(this.id)"  class="delete_reservation">&#10006;</button>  
+                        </div>
+                    </div>
+            </div>
 
         </div>   
 
         {% if not user.is_anonymous %}
-            <div style="justify-content: right; display:flex; padding-top: 1em; width: 80%;" id="send_button" >
-                <button style="padding: 8px;" onclick="send_shed()" type="button">Apply</button>
+            <div style="justify-content: center; display:flex; padding-top: 1em; padding-right: 4em;" id="send_button" >
+                <button class="apply_button"  onclick="send_shed()"  type="button">Apply</button>
             </div>
         {% endif %}
 
-        <div id="animal_id" value={{animal.pk}} style="visibility:hidden">{{week_number}}</div>
+        <div id="animal_id" value={{animal.pk}} style="visibility:hidden">{{animal.pk}}</div>
         <div id="week_num" value={{animal.pk}} style="visibility:hidden">{{week_number}}</div>
+        <div id="user_id" value={{user.pk}} style="visibility:hidden">{{user.pk}} </div>
+
     <br>
     <br>
     <br>

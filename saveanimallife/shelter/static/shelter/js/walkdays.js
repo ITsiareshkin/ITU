@@ -10,7 +10,7 @@ function get_week(){
 
     let d = new Date();
     let year = d.getFullYear();
-    let walk_data = "week_number="+week_number +"&year_number="+year+"&animal_id="+animal_id;
+    let walk_data = "week_number="+week_number +"&year_number="+year+"&animal_id="+animal_id+"&user_id="+user_id;
 
     url_a = "/walk_week/";
     $.ajax({
@@ -21,7 +21,7 @@ function get_week(){
             
             var days = JSON.parse(response["days"]);
             if(days.length == 0) {
-                window.alert("41");
+                window.alert("Database Erorr: database is empty");
             }else {
                 for (let i = 0; i < days.length; i++) {
 
@@ -39,24 +39,68 @@ function get_week(){
                         let entr_id2 = i+1 + se_tm;
                         entr_id2 -= 1;
                         if (entr_id2 - entr_id1 > 1){
-                            document.getElementById(entr_id1).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
-                            document.getElementById(entr_id2-1).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
-                            document.getElementById(entr_id2).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
-
-                            document.getElementById(i+1).style.backgroundColor = "rgba(231, 169, 87, 0.8)";
                             
+
+                            if(document.getElementById("user_id").textContent ==  fields["user_id"] || document.getElementById("user_id").textContent == 1){
+
+                               document.getElementById((i+1).toString()+(i+1).toString()).style.visibility = "visible"; 
+
+                               document.getElementById(entr_id1).style.backgroundColor = "rgba(161, 230, 33, 0.8)";
+                               document.getElementById(entr_id2).style.backgroundColor = "rgba(161, 230, 33, 0.8)";
+                               document.getElementById(entr_id2-1).style.backgroundColor = "rgba(161, 230, 33, 0.8)";
+
+                               document.getElementById(i+1).style.backgroundColor = "rgba(86, 240, 80, 0.8)";
+                               
+                            } else { 
+
+                                document.getElementById(entr_id1).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
+                                document.getElementById(entr_id2-1).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
+                                document.getElementById(entr_id2).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
+
+                                document.getElementById(i+1).style.backgroundColor = "rgba(231, 169, 87, 0.8)";  
+
+                            }
+
+                            
+
+
                         }  else {
 
                             if (entr_id1 - entr_id2 == 0){
+
+                                
+                                
+                              if(document.getElementById("user_id").textContent ==  fields["user_id"] || document.getElementById("user_id").textContent == 1){
+
+                                    document.getElementById((i+1).toString()+(i+1).toString()).style.visibility = "visible"; 
+
+                                    document.getElementById(entr_id1).style.backgroundColor = "rgba(161, 230, 33, 0.8)";
+                                    document.getElementById(i+1).style.backgroundColor = "rgba(86, 240, 80, 0.8)";
+
+                                }else{
+                                    document.getElementById(entr_id1).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
+
+                                    document.getElementById(i+1).style.backgroundColor = "rgba(231, 169, 87, 0.8)";
+                                }
+
+                            } else {
+
                                 document.getElementById(entr_id1).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
+                                document.getElementById(entr_id2).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
 
                                 document.getElementById(i+1).style.backgroundColor = "rgba(231, 169, 87, 0.8)";
+
+                                if(document.getElementById("user_id").textContent ==  fields["user_id"] || document.getElementById("user_id").textContent == 1){
+                                    document.getElementById((i+1).toString()+(i+1).toString()).style.visibility = "visible"; 
+
+                                    document.getElementById(entr_id1).style.backgroundColor = "rgba(161, 230, 33, 0.8)";
+                                    document.getElementById(entr_id2).style.backgroundColor = "rgba(161, 230, 33, 0.8)";
+
+                                    document.getElementById(i+1).style.backgroundColor = "rgba(86, 240, 80, 0.8)";
+
+                                }
+
                             }
-
-                            document.getElementById(entr_id1).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
-                            document.getElementById(entr_id2).style.backgroundColor = "rgba(189, 119, 91, 0.8)";
-
-                            document.getElementById(i+1).style.backgroundColor = "rgba(231, 169, 87, 0.8)";
 
                         }
 
@@ -133,6 +177,39 @@ function send_shed(){
 
 }
 
+function delete_walk(id){
+
+    let an_id = document.getElementById("animal_id").attributes.item(1).nodeValue;
+    let hm = Math.floor(id/10);
+    let date = document.getElementById(hm).textContent;
+
+    url_a = "/walk_deleteon/";
+
+    let walk_param = "&date="+date+"&animal_id="+an_id;
+    $.ajax({
+     type: 'GET',
+     url: url_a,
+     data: walk_param,
+     success: function (response) {
+         
+        get_week();
+
+     },
+     error: function (response) {
+         alert(response["responseJSON"]["error"]);
+     }
+ })
+
+    console.log(hm);
+    console.log(date);
+} 
+
+function blocl_registration(id){
+
+    
+
+}
+
 function newShed(id){
 
     if (id == "week_1"){
@@ -181,6 +258,7 @@ function clear_table(){
         }
 
         document.getElementById(i.toString()).style.backgroundColor = "transparent";
+        document.getElementById(i.toString()+i.toString()).style.visibility = "hidden";
 
     }
 
@@ -188,8 +266,9 @@ function clear_table(){
 
 function sheduleFunction(id) {
 
+    let hm = Math.floor(id/100);
 
-    if (counetr<3 /*&& document.getElementById(Math.floor(id/100)).style.backgroundColor !== rgba(231, 169, 87, 0.8)*/) {
+    if (counetr<3 && document.getElementById(hm.toString()).style.backgroundColor == "transparent") {
 
         if ( document.getElementById(id).style.backgroundColor !== "rgba(112, 162, 242, 0.8)" ){
             id2 = id1;

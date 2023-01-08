@@ -762,10 +762,21 @@ def register_day(request):
     animal_id = request.GET.get("animal_id",'')
     day += str(date.today().isocalendar()[0])
     day = datetime.strptime(day, "%d.%m%Y").date()
-    print(day)
     w = WalkDays.objects.get(Q(date = day) & Q(animal_id = animal_id))
     u = Account.objects.get(pk=request.user.pk)
     w.user_id = u
     w.time = time
     w.save()
     return JsonResponse({'succ': 'OK'}, status=200)
+
+def delete_day(request):
+    date_in = request.GET.get("date",'')
+    animal_id = request.GET.get("animal_id",'')
+    date_in += str(date.today().isocalendar()[0])
+    date_in = datetime.strptime(date_in, "%d.%m%Y").date()
+    w = WalkDays.objects.get(Q(animal_id = animal_id) & Q(date = date_in))
+    w.time = None
+    w.user_id = None
+    w.save()
+    return JsonResponse({'succ': 'OK'}, status=200)
+
