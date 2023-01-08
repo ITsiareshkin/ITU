@@ -40,8 +40,7 @@ function get_week(){
                         entr_id2 -= 1;
                         if (entr_id2 - entr_id1 > 1){
                             
-
-                            if(document.getElementById("user_id").textContent ==  fields["user_id"] || document.getElementById("user_id").textContent == 1){
+                            if(document.getElementById("user_id").textContent ==  fields["user_id"] || document.getElementById("user_status").attributes.item(1).nodeValue == "employee"){
 
                                document.getElementById((i+1).toString()+(i+1).toString()).style.visibility = "visible"; 
 
@@ -70,7 +69,7 @@ function get_week(){
 
                                 
                                 
-                              if(document.getElementById("user_id").textContent ==  fields["user_id"] || document.getElementById("user_id").textContent == 1){
+                              if(document.getElementById("user_id").textContent ==  fields["user_id"] || document.getElementById("user_status").attributes.item(1).nodeValue == "employee"){
 
                                     document.getElementById((i+1).toString()+(i+1).toString()).style.visibility = "visible"; 
 
@@ -90,7 +89,7 @@ function get_week(){
 
                                 document.getElementById(i+1).style.backgroundColor = "rgba(231, 169, 87, 0.8)";
 
-                                if(document.getElementById("user_id").textContent ==  fields["user_id"] || document.getElementById("user_id").textContent == 1){
+                                if(document.getElementById("user_id").textContent ==  fields["user_id"] || document.getElementById("user_status").attributes.item(1).nodeValue == "employee"){
                                     document.getElementById((i+1).toString()+(i+1).toString()).style.visibility = "visible"; 
 
                                     document.getElementById(entr_id1).style.backgroundColor = "rgba(161, 230, 33, 0.8)";
