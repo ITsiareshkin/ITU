@@ -40,3 +40,4 @@ function page_change(id){
     })
 }
 
+$(document).ready(page_change(1))
